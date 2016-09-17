@@ -16,22 +16,32 @@
 		background: white;
 	}
   #trial{
-    position: absolute;
+    position:absolute;
     width: 1000px;
     left: 80px;
     top: 10px;
+  }
+
+  #connect{
+    position: absolute;
+    width: 1000px;
+    left: 80px;
+    top: 60px;
   }
 </style>
 
 
 <body id = 'body'>
-  <input type="range" min="100" max="200" step="10" id="trial">
+
   <canvas  width = "1280" height="606" id = "myCanvas">
  Update browser
 </canvas>
+
+<input type="range" min="100" max="200" step="10" id="trial">
+<input type="range" min="300" max="400" step="10" id="connect">
+
 <script type="text/javascript">
-  console.log(window.innerWidth);
-  console.log(window.innerHeight);
+
         var Rod = function(length,thickness)
     {
       this.length=length;
@@ -53,9 +63,10 @@
 
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
-      ctx.opacity = 1;
 
-    var tri=document.getElementById("trial");
+
+    var cra=document.getElementById("trial");
+    var con=document.getElementById("connect");
 
     var angle = 0;
     var fps=60;
@@ -89,12 +100,6 @@
 
     function resize(){
 
-  //    tri.style.left=(canvas.width/4).toString()+"px";
-    //  tri.style.top=(canvas.height/9).toString()+"px";
-      tri.style.marginLeft=(canvas.style.marginLeft).toString();
-      tri.style.marginTop  =(canvas.style.marginTop).toString();
-      tri.style.width=(canvas.width/4).toString()+'px';
-
     	if(window.innerHeight > 9*window.innerWidth/16){
     		canvas.width  = window.innerWidth;
 	      	canvas.height = 9*window.innerWidth/16;
@@ -111,12 +116,26 @@
     		canvas.style.marginLeft = ((window.innerWidth - canvas.width)/2).toString() + 'px';
     		canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
     	}
+
+
+      cra.style.marginLeft=(canvas.style.marginLeft).toString();
+      cra.style.marginTop  =(canvas.style.marginTop).toString();
+      cra.style.width=(canvas.width/6).toString()+'px';
+      
+
+      con.style.marginLeft=(canvas.style.marginLeft).toString();
+      con.style.marginTop  =(canvas.style.marginTop).toString();
+      con.style.width=(canvas.width/6).toString()+'px';
+    //  con.style.height=(canvas.height/2).toString()+'px';
+
+
     }
 
     function drawTarget()
     {
     	resize();
-      crank.length=tri.value;
+      crank.length=cra.value;
+      connectingRod.length=con.value;
 
 
         ctx.clearRect(0, 0, canvas.width , canvas.height);
