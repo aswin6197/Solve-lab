@@ -41,7 +41,7 @@
  Update browser
 </canvas>
 
-<input type="range" min="100" max="200" step="1" id="crankSliderId" class="variableSlider">
+<input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider">
 <input type="range" min="0" max="5" value="1" step="0.01" id="omega2SliderId" class="variableSlider">
 
@@ -79,7 +79,7 @@
         if(angle > 360){
             angle = angle - 360;
         }
-  }
+    }
 
     function calculatePhi(angle){
         return Math.asin((crank.length * Math.sin(convertToRadian(360 - angle)))/ connectingRod.length)
@@ -133,52 +133,49 @@
       sliderResize();
     }
 
+    function drawAxis(ctx,startX,startY,endX,endY){
+      //y axis
+      ctx.beginPath();
+      ctx.moveTo(startX[0],startX[1]);
+      ctx.lineTo(endX[0],endX[1]);
+      ctx.stroke();
+      ctx.closePath();
+
+      //x axis
+      ctx.beginPath();
+      ctx.moveTo(startY[0],startY[1]);
+      ctx.lineTo(endY[0],endY[1]);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    function drawDynamicGraph(ctx,i,j,fn,adjust,scaling){
+        var k;
+        for(k=-360;k<=0;k++){
+          ctx.beginPath();
+          ctx.moveTo(i+k/1280*canvas.width,j- adjust -(fn(k +angle))/1280*canvas.width*scaling);
+          ctx.lineTo(i+(k+1)/1280*canvas.width,j- adjust -(fn(k+1 +angle))/1280*canvas.width*scaling)
+          ctx.stroke();
+          ctx.closePath();
+        }
+    }
+
     function drawGraph(){
       var i = canvas.width - 100/1280*canvas.width;
       var j = canvas.height;
-      var k;
 
+      ctx.lineWidth=2;
       //axis for slider graph
-      ctx.lineWidth=2;// for y axis
-      ctx.beginPath();
-      ctx.moveTo(i-360/1280*canvas.width,j/2-40/1280*canvas.width);
-      ctx.lineTo(i-360/1280*canvas.width,(j-(sliderPositionFromCrank(0)+100)/1280*canvas.width)/2);
-      ctx.stroke();
-      ctx.closePath();
-
-      ctx.beginPath();// x axis
-      ctx.moveTo(i-360/1280*canvas.width,j/2-40/1280*canvas.width);
-      ctx.lineTo(i+10/1280*canvas.width,j/2-40/1280*canvas.width);
-      ctx.stroke();
-      ctx.closePath();
+      drawAxis(ctx,[i-360/1280*canvas.width,j/2-40/1280*canvas.width],
+      [i-360/1280*canvas.width,j/2-40/1280*canvas.width],[i+10/1280*canvas.width,j/2-40/1280*canvas.width],[i-360/1280*canvas.width,(j-(sliderPositionFromCrank(0)+100)/1280*canvas.width)/2]);
 
       //axis for phi graph
-      ctx.beginPath();//y axis
-      ctx.moveTo(i-360/1280*canvas.width,j-150/1280*canvas.width-300*calculatePhi(90)/1280*canvas.width);
-      ctx.lineTo(i-360/1280*canvas.width,j-150/1280*canvas.width-300*calculatePhi(270)/1280*canvas.width);
-      ctx.stroke();
-      ctx.closePath();
+      drawAxis(ctx,[i-360/1280*canvas.width,j-150/1280*canvas.width],[i-360/1280*canvas.width,j-150/1280*canvas.width-300*calculatePhi(90)/1280*canvas.width],[i+10/1280*canvas.width,j-150/1280*canvas.width],
+      [i-360/1280*canvas.width,j-150/1280*canvas.width-300*calculatePhi(270)/1280*canvas.width])
 
-      ctx.beginPath();// x axis
-      ctx.moveTo(i-360/1280*canvas.width,j-150/1280*canvas.width);
-      ctx.lineTo(i+10/1280*canvas.width,j-150/1280*canvas.width);
-      ctx.stroke();
-      ctx.closePath();
-
-      ctx.lineWidth = 2;
-      for(k=-360;k<=0;k++){
-        ctx.beginPath();
-        ctx.moveTo(i+k/1280*canvas.width, j-(370+crank.length/10) /1280*canvas.width- (sliderPositionFromCrank(k +angle))/3/1280*canvas.width);
-        ctx.lineTo(i+(k+1)/1280*canvas.width, j-(370+crank.length/10) /1280*canvas.width -(sliderPositionFromCrank(k+1+angle))/3/1280*canvas.width);
-        ctx.stroke();
-        ctx.closePath();
-
-        ctx.beginPath();
-        ctx.moveTo(i+k/1280*canvas.width, j-150/1280*canvas.width-300* calculatePhi(k +angle)/1280*canvas.width);
-        ctx.lineTo(i+(k+1)/1280*canvas.width, j -150/1280*canvas.width-300* calculatePhi(k+1+angle)/1280*canvas.width);
-        ctx.stroke();
-        ctx.closePath();
-        }
+      //slider vs time graph
+      drawDynamicGraph(ctx,i,j,sliderPositionFromCrank,(370+crank.length/10) /1280*canvas.width,1/3);
+      //phi vs time graph
+      drawDynamicGraph(ctx,i,j,calculatePhi,150/1280*canvas.width,300);
     }
 
     function drawTarget(){
@@ -191,7 +188,7 @@
       ctx.clearRect(0, 0, canvas.width , canvas.height);
 
       ctx.lineWidth = crank.thickness/1280*canvas.width;
-      ctx.translate(canvas.width/5,canvas.height/2);
+      ctx.translate(canvas.width/5,canvas.height/2.5);
       ctx.rotate(convertToRadian(angle));
       ctx.beginPath();
       ctx.moveTo(0,0);
@@ -205,11 +202,11 @@
       ctx.closePath();
       resetOrigin();
 
-      ctx.translate(canvas.width/5 + sliderPositionFromCrank(angle)/1280*canvas.width, canvas.height/2);
+      ctx.translate(canvas.width/5 + sliderPositionFromCrank(angle)/1280*canvas.width, canvas.height/2.5);
       ctx.strokeRect(-slider.length/2/1280*canvas.width, -slider.breadth/2/1280*canvas.width, slider.length/1280*canvas.width, slider.breadth/1280*canvas.width);
       resetOrigin();
 
-      ctx.translate(canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))/1280*canvas.width, canvas.height/2 + crank.length*Math.sin(convertToRadian(angle))/1280*canvas.width);
+      ctx.translate(canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))/1280*canvas.width, canvas.height/2.5 + crank.length*Math.sin(convertToRadian(angle))/1280*canvas.width);
       ctx.rotate(calculatePhi(angle));
       ctx.lineWidth = connectingRod.thickness/1280*canvas.width;
       ctx.beginPath();
