@@ -15,34 +15,43 @@
 	canvas {
 		background: white;
 	}
-  #trial{
+  #crankSliderId{
     position:absolute;
     width: 1000px;
     left: 80px;
-    top: 10px;
+
   }
 
-  #connect{
+
+  #connectingRodSliderId{
     position: absolute;
     width: 1000px;
     left: 80px;
-    top: 60px;
+    top:200px;
+  }
+
+  #omega2SliderId{
+    position: absolute;
+    width: 1000px;
+    left: 80px;
+    top:200px;
   }
 </style>
 
 
-<body id = 'body'>
+<body>
 
   <canvas  width = "1280" height="606" id = "myCanvas">
  Update browser
 </canvas>
 
-<input type="range" min="100" max="200" step="10" id="trial">
-<input type="range" min="300" max="400" step="10" id="connect">
+<input type="range" min="100" max="200" step="10" id="crankSliderId">
+<input type="range" min="300" max="400" step="10" id="connectingRodSliderId">
+<input type="range" min="0" max="5" value="1" step="0.01" id="omega2SliderId">
 
 <script type="text/javascript">
 
-        var Rod = function(length,thickness)
+    var Rod = function(length,thickness)
     {
       this.length=length;
       this.thickness=thickness;
@@ -61,15 +70,15 @@
     var canvas = document.getElementById('myCanvas');
     var ctx = document.getElementById('myCanvas').getContext('2d');
 
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-
-    var cra=document.getElementById("trial");
-    var con=document.getElementById("connect");
+    var crankSlider=document.getElementById("crankSliderId");
+    var connectingRodSlider=document.getElementById("connectingRodSliderId");
+    var omega2Slider=document.getElementById("omega2SliderId");
 
     var angle = 0;
     var fps=60;
+
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     function convertToRadian(degree)
     {
@@ -78,12 +87,12 @@
 
     function incrementAngle()
     {
-        angle = angle+1;
-        if(angle > 360)
+        angle = angle + omega2Slider.value/1;
+     if(angle > 360)
         {
             angle = angle - 360;
         }
-    }
+  }
 
     function calculatePhi(angle){
         return Math.asin((crank.length * Math.sin(convertToRadian(360 - angle)))/ connectingRod.length)
@@ -118,28 +127,35 @@
     	}
 
 
-      cra.style.marginLeft=(canvas.style.marginLeft).toString();
-      cra.style.marginTop  =(canvas.style.marginTop).toString();
-      cra.style.width=(canvas.width/6).toString()+'px';
-      
+     crankSlider.style.marginLeft=(canvas.style.marginLeft).toString();
+      crankSlider.style.marginTop  =(canvas.style.marginTop).toString();
+      crankSlider.style.width=(canvas.width/6).toString()+'px';
+      crankSlider.style.left=(canvas.width/30).toString()+'px';
+      crankSlider.style.top=(canvas.height/20).toString()+'px';
 
-      con.style.marginLeft=(canvas.style.marginLeft).toString();
-      con.style.marginTop  =(canvas.style.marginTop).toString();
-      con.style.width=(canvas.width/6).toString()+'px';
-    //  con.style.height=(canvas.height/2).toString()+'px';
+     connectingRodSlider.style.marginLeft=(canvas.style.marginLeft).toString();
+     connectingRodSlider.style.marginTop  =(canvas.style.marginTop).toString();
+     connectingRodSlider.style.width=(canvas.width/6).toString()+'px';
+     connectingRodSlider.style.left=(20+canvas.width/6+canvas.width/30).toString()+'px';
+     connectingRodSlider.style.top=(canvas.height/20).toString()+'px';
 
-
+     omega2Slider.style.marginLeft=(canvas.style.marginLeft).toString();
+     omega2Slider.style.marginTop  =(canvas.style.marginTop).toString();
+     omega2Slider.style.width=(canvas.width/6).toString()+'px';
+     omega2Slider.style.left=(40+2*canvas.width/6+canvas.width/30).toString()+'px';
+     omega2Slider.style.top=(canvas.height/20).toString()+'px';
     }
 
     function drawTarget()
     {
     	resize();
-      crank.length=cra.value;
-      connectingRod.length=con.value;
-
+      crank.length=crankSlider.value;
+      connectingRod.length=connectingRodSlider.value;
+      //crank.angle=omega2Slider.value;
+incrementAngle();
 
         ctx.clearRect(0, 0, canvas.width , canvas.height);
-        incrementAngle();
+
 
 
         ctx.lineWidth = crank.thickness/1280*canvas.width;
@@ -189,7 +205,7 @@
         ctx.lineWidth=2;// for y axis
         ctx.beginPath();
         ctx.moveTo(i-360/1280*canvas.width,j/2-40/1280*canvas.width);
-        ctx.lineTo(i-360/1280*canvas.width,(j-(sliderPositionFromCrank(0)+100)/1280*canvas.width)/2+0);
+        ctx.lineTo(i-360/1280*canvas.width,(j-(sliderPositionFromCrank(0)+100)/1280*canvas.width)/2);
         ctx.stroke();
         ctx.closePath();
 
