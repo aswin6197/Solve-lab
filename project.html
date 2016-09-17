@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Slider Crank</title>
+</head>
+
+<style type="text/css">
+
+	html, body{
+		background: black;
+		margin: 0px;
+		padding: 0px;
+	}
+
+	canvas {
+		background: white;
+	}
+  #trial{
+    position: absolute;
+    width: 1000px;
+    left: 80px;
+    top: 10px;
+  }
+</style>
+
+
+<body id = 'body'>
+  <input type="range" min="100" max="200" step="10" id="trial">
+  <canvas  width = "1280" height="606" id = "myCanvas">
+ Update browser
+</canvas>
+<script type="text/javascript">
+  console.log(window.innerWidth);
+  console.log(window.innerHeight);
+        var Rod = function(length,thickness)
+    {
+      this.length=length;
+      this.thickness=thickness;
+    };
+
+    var Slider = function(length,breadth)
+    {
+      this.length=length;
+      this.breadth=breadth;
+    };
+
+    slider = new Slider(200/1280*window.innerWidth,50/606*window.innerHeight);
+    crank = new Rod(200/1280*window.innerWidth,10/606*window.innerHeight);
+    connectingRod = new Rod(300/1280*window.innerWidth,10/606*window.innerHeight);
+
+    var canvas = document.getElementById('myCanvas');
+    var ctx = document.getElementById('myCanvas').getContext('2d');
+
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.opacity = 1;
+
+    var tri=document.getElementById("trial");
+
+    var angle = 0;
+    var fps=60;
+
+    function convertToRadian(degree)
+    {
+        return degree*(Math.PI/180);
+    }
+
+    function incrementAngle()
+    {
+        angle = angle+1;
+        if(angle > 360)
+        {
+            angle = angle - 360;
+        }
+    }
+
+    function calculatePhi(angle){
+        return Math.asin((crank.length * Math.sin(convertToRadian(360 - angle)))/ connectingRod.length)
+    }
+
+    function sliderPositionFromCrank(angle){
+        return Math.sqrt(Math.pow(connectingRod.length,2) - Math.pow(crank.length*Math.sin(convertToRadian(360 - angle)),2)) + crank.length*Math.cos(convertToRadian(360 - angle))
+    }
+
+    function resetOrigin()
+    {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    function resize(){
+
+  //    tri.style.left=(canvas.width/4).toString()+"px";
+    //  tri.style.top=(canvas.height/9).toString()+"px";
+      tri.style.marginLeft=(canvas.style.marginLeft).toString();
+      tri.style.marginTop  =(canvas.style.marginTop).toString();
+      tri.style.width=(canvas.width/4).toString()+'px';
+
+    	if(window.innerHeight > 9*window.innerWidth/16){
+    		canvas.width  = window.innerWidth;
+	      	canvas.height = 9*window.innerWidth/16;
+	      	canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
+	      	canvas.style.marginLeft = ((window.innerWidth - canvas.width)/2).toString() + 'px';
+
+
+
+    	}
+
+    	else{
+    		canvas.height = window.innerHeight;
+    		canvas.width = 16*window.innerHeight/9;
+    		canvas.style.marginLeft = ((window.innerWidth - canvas.width)/2).toString() + 'px';
+    		canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
+    	}
+    }
+
+    function drawTarget()
+    {
+    	resize();
+      crank.length=tri.value;
+
+
+        ctx.clearRect(0, 0, canvas.width , canvas.height);
+        incrementAngle();
+
+
+        ctx.lineWidth = crank.thickness/1280*canvas.width;
+        ctx.translate(canvas.width/5,canvas.height/2);
+        ctx.rotate(convertToRadian(angle));
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(crank.length/1280*canvas.width,0);
+        ctx.stroke()
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.arc(0, 0, crank.length/1280*canvas.width, 0, 2 * Math.PI, false);
+        ctx.lineWidth = crank.thickness/2;
+        ctx.stroke();
+        ctx.closePath();
+        resetOrigin();
+
+
+        ctx.translate(canvas.width/5 + sliderPositionFromCrank(angle)/1280*canvas.width, canvas.height/2);
+        ctx.strokeRect(-slider.length/2/1280*canvas.width, -slider.breadth/2/1280*canvas.width, slider.length/1280*canvas.width, slider.breadth/1280*canvas.width);
+        resetOrigin();
+
+
+        ctx.translate(canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))/1280*canvas.width, canvas.height/2 + crank.length*Math.sin(convertToRadian(angle))/1280*canvas.width);
+        ctx.rotate(calculatePhi(angle));
+        ctx.lineWidth = connectingRod.thickness/1280*canvas.width;
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(connectingRod.length/1280*canvas.width, 0);
+        ctx.stroke();
+        ctx.closePath();
+        resetOrigin();
+
+      //  markAxis(ctx);
+
+        drawGraph();
+    }
+
+    function drawGraph()
+    {
+
+        var i = canvas.width - 100/1280*canvas.width;
+        var j = canvas.height;
+        var k;
+
+        //axis for slider graph
+        ctx.lineWidth=2;// for y axis
+        ctx.beginPath();
+        ctx.moveTo(i-360/1280*canvas.width,j/2-40/1280*canvas.width);
+        ctx.lineTo(i-360/1280*canvas.width,(j-(sliderPositionFromCrank(0)+100)/1280*canvas.width)/2+0);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();// x axis
+        ctx.moveTo(i-360/1280*canvas.width,j/2-40/1280*canvas.width);
+        ctx.lineTo(i+10/1280*canvas.width,j/2-40/1280*canvas.width);
+        ctx.stroke();
+        ctx.closePath();
+
+        //axis for phi graph
+        ctx.beginPath();//y axis
+        ctx.moveTo(i-360/1280*canvas.width,j-150/1280*canvas.width-100*calculatePhi(90)/1280*canvas.width);
+        ctx.lineTo(i-360/1280*canvas.width,j-150/1280*canvas.width-100*calculatePhi(270)/1280*canvas.width);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();// x axis
+        ctx.moveTo(i-360/1280*canvas.width,j-150/1280*canvas.width);
+        ctx.lineTo(i+10/1280*canvas.width,j-150/1280*canvas.width);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.lineWidth = 2;
+        for(k=-360;k<=0;k++)
+        {   ctx.beginPath();
+            ctx.moveTo(i+k/1280*canvas.width, j-(370+crank.length/10) /1280*canvas.width- (sliderPositionFromCrank(k +angle))/2/1280*canvas.width);
+            ctx.lineTo(i+(k+1)/1280*canvas.width, j-(370+crank.length/10) /1280*canvas.width -(sliderPositionFromCrank(k+1+angle))/2/1280*canvas.width);
+            ctx.stroke();
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.moveTo(i+k/1280*canvas.width, j-150/1280*canvas.width-100* calculatePhi(k +angle)/1280*canvas.width);
+            ctx.lineTo(i+(k+1)/1280*canvas.width, j -150/1280*canvas.width-100* calculatePhi(k+1+angle)/1280*canvas.width);
+            ctx.stroke();
+            ctx.closePath();
+        }
+    }
+
+    setInterval(drawTarget, 1000/fps);
+</script>
+
+
+
+</body>
+</html>
