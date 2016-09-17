@@ -95,26 +95,14 @@
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    function sliderResize() {
+    function sliderResize(tem,f) {
 
-      crankSlider.style.marginLeft=(canvas.style.marginLeft).toString();
-      crankSlider.style.marginTop  =(canvas.style.marginTop).toString();
-      crankSlider.style.width=(canvas.width/6).toString()+'px';
-      crankSlider.style.left=(canvas.width/30).toString()+'px';
-      crankSlider.style.top=(canvas.height/20).toString()+'px';
-
-      connectingRodSlider.style.marginLeft=(canvas.style.marginLeft).toString();
-      connectingRodSlider.style.marginTop  =(canvas.style.marginTop).toString();
-      connectingRodSlider.style.width=(canvas.width/6).toString()+'px';
-      connectingRodSlider.style.left=(20+canvas.width/6+canvas.width/30).toString()+'px';
-      connectingRodSlider.style.top=(canvas.height/20).toString()+'px';
-
-      omega2Slider.style.marginLeft=(canvas.style.marginLeft).toString();
-      omega2Slider.style.marginTop  =(canvas.style.marginTop).toString();
-      omega2Slider.style.width=(canvas.width/6).toString()+'px';
-      omega2Slider.style.left=(40+2*canvas.width/6+canvas.width/30).toString()+'px';
-      omega2Slider.style.top=(canvas.height/20).toString()+'px';
-    }
+      tem.style.marginLeft=(canvas.style.marginLeft).toString();
+      tem.style.marginTop  =(canvas.style.marginTop).toString();
+      tem.style.width=(canvas.width/6).toString()+'px';
+      tem.style.left=(f*20+f*canvas.width/6 +canvas.width/30).toString()+'px';
+      tem.style.top=(canvas.height/20).toString()+'px';
+      }
 
     function resize(){
 
@@ -132,7 +120,10 @@
     		canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
     	}
 
-      sliderResize();
+
+    sliderResize(crankSlider,0);
+    sliderResize(connectingRodSlider,1);
+    sliderResize(omega2Slider,2);
     }
 
     function drawAxis(ctx,startX,startY,endX,endY){
