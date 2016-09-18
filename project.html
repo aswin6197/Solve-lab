@@ -119,10 +119,11 @@
     }
 
     function incrementAngle(){
-        angle = angle + omega2Slider.value/1;
+        angle = angle + parseInt(omega2Slider.value);
+        //parseInt converts the string returned by omega2Slider.value to an int
         if(angle > 360){
             angle = angle - 360;
-        }
+      }
     }
 
     function calculatePhi(angle){
@@ -216,9 +217,10 @@
     function drawTarget(){
 
         ratio=canvas.width/1280;
-    	resize();
-        crank.length=crankSlider.value;
-        connectingRod.length=connectingRodSlider.value;
+    	  resize();
+
+        crank.length=parseInt(crankSlider.value);
+        connectingRod.length=parseInt(connectingRodSlider.value);
 
         incrementAngle();
         ctx.clearRect(0, 0, canvas.width , canvas.height);
