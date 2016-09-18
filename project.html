@@ -47,14 +47,52 @@
 
 <script type="text/javascript">
 
-    var Rod = function(length,thickness){
+    var Rod = function(length,thickness, canvas, origin = [0,0]){
+      this.ctx = canvas.getContext('2d');
       this.length=length;
       this.thickness=thickness;
+      this.origin = origin;
     };
 
-    var Slider = function(length,breadth){
+    Rod.prototype.rotate = function(angle = 0, drawCircumference = true){
+    	this.ctx.lineWidth = this.thickness*ratio;
+        this.ctx.translate(this.origin[0], this.origin[1]);
+        this.ctx.rotate(convertToRadian(angle));
+        this.ctx.beginPath();
+        this.ctx.moveTo(0,0);
+        this.ctx.lineTo(this.length*ratio,0);
+        this.ctx.stroke();
+        this.ctx.closePath();
+        if(drawCircumference == true){
+        	this.ctx.beginPath();
+        	this.ctx.arc(0,0,this.length*ratio, 0, 2*Math.PI, false);
+        	this.ctx.lineWidth = this.thickness/2;
+        	this.ctx.stroke();
+        	this.ctx.closePath();
+        }
+      	resetOrigin();
+    };
+
+    Rod.prototype.attach = function(point = [0,0]){
+    	this.origin = point;
+    };
+
+    var Slider = function(length,breadth, canvas, origin = [0,0]){
+      this.ctx = canvas.getContext('2d');
       this.length=length;
       this.breadth=breadth;
+      this.origin = origin;
+    };
+
+    Slider.prototype.attach = function(point = [0,0]){
+    	this.origin = point;
+    };
+
+    Slider.prototype.rotate = function(angle = 0){
+        this.ctx.translate(this.origin[0], this.origin[1]);
+        this.ctx.rotate(convertToRadian(angle));
+        this.ctx.strokeRect(-this.length/2*ratio, -this.breadth/2*ratio, this.length*ratio, this.breadth*ratio);
+        resetOrigin();
     };
 
     var canvas = document.getElementById('myCanvas');
@@ -65,15 +103,19 @@
 
     var angle = 0;
     var fps=60;
-    var ratio=canvas.width/1280;;
+    var ratio=canvas.width/1280;
     var aspectRatio=16/9;
 
-    slider = new Slider(200*ratio,50*ratio);
-    crank = new Rod(200*ratio,10*ratio);
-    connectingRod = new Rod(300*ratio,10*ratio);
+    slider = new Slider(200*ratio,50*ratio, canvas, origin = [0]);
+    crank = new Rod(200*ratio,10*ratio, canvas, origin = [canvas.width/5,canvas.height/2.75]);
+    connectingRod = new Rod(300*ratio,10*ratio, canvas);
 
     function convertToRadian(degree){
         return degree*(Math.PI/180);
+    }
+
+    function convertToDegree(radian){
+        return radian/(Math.PI/180);
     }
 
     function incrementAngle(){
@@ -172,44 +214,25 @@
     }
 
     function drawTarget(){
-      ratio=canvas.width/1280;
+
+        ratio=canvas.width/1280;
     	resize();
-      crank.length=crankSlider.value;
-      connectingRod.length=connectingRodSlider.value;
+        crank.length=crankSlider.value;
+        connectingRod.length=connectingRodSlider.value;
 
-      incrementAngle();
-      ctx.clearRect(0, 0, canvas.width , canvas.height);
+        incrementAngle();
+        ctx.clearRect(0, 0, canvas.width , canvas.height);
 
-      ctx.lineWidth = crank.thickness*ratio;
-      ctx.translate(canvas.width/5,canvas.height/2.75);
-      ctx.rotate(convertToRadian(angle));
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(crank.length*ratio,0);
-      ctx.stroke()
-      ctx.closePath();
-      ctx.beginPath();
-      ctx.arc(0, 0, crank.length*ratio, 0, 2 * Math.PI, false);
-      ctx.lineWidth = crank.thickness/2;
-      ctx.stroke();
-      ctx.closePath();
-      resetOrigin();
+      	crank.attach([canvas.width/5,canvas.height/2.75]);
+      	crank.rotate(angle);
 
-      ctx.translate(canvas.width/5 + sliderPositionFromCrank(angle)*ratio, canvas.height/2.75);
-      ctx.strokeRect(-slider.length/2*ratio, -slider.breadth/2*ratio, slider.length*ratio, slider.breadth*ratio);
-      resetOrigin();
+      	slider.attach([canvas.width/5 + sliderPositionFromCrank(angle)*ratio, canvas.height/2.75]);
+      	slider.rotate(0);
 
-      ctx.translate(canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))*ratio, canvas.height/2.75 + crank.length*Math.sin(convertToRadian(angle))*ratio);
-      ctx.rotate(calculatePhi(angle));
-      ctx.lineWidth = connectingRod.thickness*ratio;
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.lineTo(connectingRod.length*ratio, 0);
-      ctx.stroke();
-      ctx.closePath();
-      resetOrigin();
+      	connectingRod.attach([canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))*ratio, canvas.height/2.75 + crank.length*Math.sin(convertToRadian(angle))*ratio]);
+      	connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
 
-      drawGraph();
+      	drawGraph();
     }
 
     setInterval(drawTarget, 1000/fps);
