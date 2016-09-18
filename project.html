@@ -43,7 +43,7 @@
 
 <input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider">
-<input type="range" min="0" max="5" value="1" step="0.01" id="omega2SliderId" class="variableSlider">
+<input type="range" min="0.99" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider">
 
 <script type="text/javascript">
 
@@ -101,7 +101,7 @@
     var connectingRodSlider=document.getElementById("connectingRodSliderId");
     var omega2Slider=document.getElementById("omega2SliderId");
 
-    var angle = 0;
+    var angle = 0.0;
     var fps=60;
     var ratio=canvas.width/1280;
     var aspectRatio=16/9;
