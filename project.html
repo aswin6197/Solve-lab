@@ -36,17 +36,31 @@
 
 <body>
 
+  <select id="data1" class="variableSlider">
+    <option value="1">slider</option>
+    <option value="2">phi</option>
+    <option value="3">data</option>
+  </select>
+
+  <select id="data2" class="variableSlider">
+    <option value="1">slider</option>
+    <option value="2">phi</option>
+    <option value="3">data</option>
+  </select>
+
   <canvas  width = "1280" height="606" id = "myCanvas">
  Update browser
 </canvas>
 
 <input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider">
-<input type="range" min="0.99" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider">
+<input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider">
 
 <input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="set()" onchange="set1()">
 <input type="text" id="connectingRodTextId" placeholder="300" class="variableSlider" onfocus="set()" onchange="set1()">
 <input type="text" id="omega2TextId" placeholder="3" class="variableSlider" onfocus="set()" onchange="set1()">
+
+<input type="checkbox" id="dirReverse" class="variableSlider">
 
 <script type="text/javascript">
 
@@ -99,7 +113,7 @@
     };
 
     var canvas = document.getElementById('myCanvas');
-    var ctx = document.getElementById('myCanvas').getContext('2d');
+    var ctx = canvas.getContext('2d');
     var crankSlider=document.getElementById("crankSliderId");
     var connectingRodSlider=document.getElementById("connectingRodSliderId");
     var omega2Slider=document.getElementById("omega2SliderId");
@@ -107,6 +121,10 @@
     var crankLengthText=document.getElementById("crankLengthTextId");
     var connectingRodText=document.getElementById("connectingRodTextId");
     var omega2Text=document.getElementById("omega2TextId");
+
+    var dirRev=document.getElementById("dirReverse");
+    var data1=document.getElementById("data1");
+    var data2=document.getElementById("data2");
 
     var angle = 0.0;
     var fps=60;
@@ -139,10 +157,18 @@
     }
 
     function incrementAngle(){
-        angle = angle + parseInt(omega2Slider.value);
-        //parseInt converts the string returned by omega2Slider.value to an int
-        if(angle > 360){
-            angle = angle - 360;
+
+      if(dirRev.checked==0){
+        angle = angle + parseFloat(omega2Slider.value);
+      }
+      else {
+        angle = angle - parseFloat(omega2Slider.value);
+      }  //parseInt converts the string returned by omega2Slider.value to an int
+      if(angle > 360){
+        angle = angle - 360;
+      }
+      else if (angle<-360) {
+        angle = angle+360;
       }
     }
 
@@ -160,9 +186,16 @@
 
     function sliderResize(tem,l,h) {
 
-      tem.style.width=(canvas.width/6/h).toString()+'px';
-      tem.style.left=(l*20+l*canvas.width/6 +canvas.width/30+parseInt(canvas.style.marginLeft)).toString()+'px';
-      tem.style.top=(h*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
+      if(l<3){
+        tem.style.width=(canvas.width/6/h).toString()+'px';
+        tem.style.left=(l*20+l*canvas.width/6 +canvas.width/30+parseInt(canvas.style.marginLeft)).toString()+'px';
+        tem.style.top=(h*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
+        }
+
+      else {
+        tem.style.left=(canvas.width*9/10).toString()+'px'
+        tem.style.top=(canvas.height*h/10).toString()+'px';
+        }
       }
 
     function resize(){
@@ -180,14 +213,22 @@
     		canvas.style.marginLeft = ((window.innerWidth - canvas.width)/2).toString() + 'px';
     		canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
     	}
-
-
+    //for the input sliders
     sliderResize(crankSlider,0,1);
     sliderResize(connectingRodSlider,1,1);
     sliderResize(omega2Slider,2,1);
+
+    //for the input text boxes
     sliderResize(crankLengthText,0,2);
     sliderResize(connectingRodText,1,2);
     sliderResize(omega2Text,2,2);
+
+    //for the checkbox and dropdown menu
+    sliderResize(dirRev,3,1);
+    sliderResize(data1,3,2);
+    sliderResize(data2,3,3);
+
+    ctx.fillText("hello",100,700);
     }
 
     function drawAxis(ctx,startX,startY,endX,endY){
@@ -217,23 +258,43 @@
     }
 
     function drawGraph(){
-      var i = canvas.width - 100*ratio;
-      var j = canvas.height;
 
       ctx.lineWidth=2;
       //axis for slider graph
-      drawAxis(ctx,[i-930*ratio,j-50*ratio],
-      [i-930*ratio,j-50*ratio],[i-600*ratio,j-50*ratio],[i-930*ratio,(j-(10+sliderPositionFromCrank(0)/3)*ratio)]);
+      if(data1.value==1){
+        drawAxis(ctx,[canvas.width/5,canvas.height*9/10],
+        [canvas.width/5,canvas.height*9/10],[canvas.width/2,canvas.height*9/10],[canvas.width/5,(canvas.height*9/10-(sliderPositionFromCrank(0)/3.5)*ratio)]);
 
       //slider vs time graph
-      drawDynamicGraph(ctx,i-570*ratio,j+350*ratio,sliderPositionFromCrank,(370+crank.length/10)*ratio,1/3.5);
-
-      //axis for phi graph
-      drawAxis(ctx,[i-360*ratio,j-150*ratio],[i-360*ratio,j-150*ratio-200*calculatePhi(90)*ratio],[i+10*ratio,j-150*ratio],
-      [i-360*ratio,j-150*ratio-200*calculatePhi(270)*ratio])
+        drawDynamicGraph(ctx,615*ratio,980*ratio,sliderPositionFromCrank,(300+crank.length/10)*ratio,1/3);
+      }
+    else if (data1.value==2) {
+        //axis for phi graph
+      drawAxis(ctx,[250*ratio,570*ratio],[250*ratio,570*ratio-200*calculatePhi(90)*ratio],[610*ratio,570*ratio],
+      [250*ratio,570*ratio-200*calculatePhi(270)*ratio]);
 
       //phi vs time graph
-      drawDynamicGraph(ctx,i,j,calculatePhi,150*ratio,200);
+      drawDynamicGraph(ctx,610*ratio,720*ratio,calculatePhi,150*ratio,200);
+
+    }
+
+    if(data2.value==1){
+        //axis for slider graph
+      drawAxis(ctx,[820*ratio,canvas.height*9/10],
+      [820*ratio,canvas.height*9/10],[1200*ratio,canvas.height*9/10],[820*ratio,(canvas.height*9/10-(sliderPositionFromCrank(0)/3.5)*ratio)]);
+
+      //slider vs time graph
+      drawDynamicGraph(ctx,1180*ratio,980*ratio,sliderPositionFromCrank,(300+crank.length/10)*ratio,1/3);
+    }
+
+      else if(data2.value==2){
+      //axis for phi graph
+        drawAxis(ctx,[820*ratio,570*ratio],[820*ratio,571*ratio-200*calculatePhi(90)*ratio],[1200*ratio,570*ratio],
+        [820*ratio,570*ratio-200*calculatePhi(270)*ratio])
+
+      //phi vs time graph
+        drawDynamicGraph(ctx,1180*ratio,720*ratio,calculatePhi,150*ratio,200);
+      }
     }
 
     function drawTarget(){
