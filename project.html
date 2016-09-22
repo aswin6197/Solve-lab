@@ -30,6 +30,10 @@
   .variableSlider{
     position: absolute;
   }
+/*#submit{
+  left: 100px;
+  top:100px;*/
+}
 
 </style>
 
@@ -54,12 +58,14 @@
 
 <input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider">
-<input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider">
+<input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onchange="start()">
 
 <input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="set()" onchange="set1()">
 <input type="text" id="connectingRodTextId" placeholder="300" class="variableSlider" onfocus="set()" onchange="set1()">
-<input type="text" id="omega2TextId" placeholder="3" class="variableSlider" onfocus="set()" onchange="set1()">
-<input type="text" id="setAngleId" placeholder="angle" class="variableSlider">
+<input type="text" id="omega2TextId" placeholder="3" class="variableSlider" >
+<input type="text" id="setAngleId" placeholder="angle" class="variableSlider" onchange="stop()">
+
+
 
 <input type="checkbox" id="dirReverse" class="variableSlider">
 
@@ -129,6 +135,7 @@
     var data1=document.getElementById("data1");
     var data2=document.getElementById("data2");
     var setAngle=document.getElementById("setAngleId");
+    var submit=document.getElementById("button");
 
     var angle = 0.0;
     var fps=60;
@@ -136,10 +143,17 @@
     var aspectRatio=16/9;
 
     var f=1;
+    var flag=1;
 
     slider = new Slider(200*ratio,50*ratio, canvas, origin = [0]);
     crank = new Rod(200*ratio,10*ratio, canvas, origin = [canvas.width/5,canvas.height/2.75]);
     connectingRod = new Rod(300*ratio,10*ratio, canvas);
+
+    function stop(){
+      flag=0;
+      angle=360-parseFloat(setAngle.value)%360;
+      omega2Slider.value=0;
+    }
 
     function set1(){
       crankSlider.value=crankLengthText.value;
@@ -150,6 +164,10 @@
 
     function set(){
       f=0;
+    }
+
+    function start(){
+      flag=1;
     }
 
     function convertToRadian(degree){
@@ -233,9 +251,13 @@
     sliderResize(data1,3,2);
     sliderResize(data2,3,3);
 
+
     displayText(ctx,'set angle',1);
     displayText(ctx,'display 1',2);
     displayText(ctx,'display 2',3);
+
+    //submit.style.left=(parseFloat(canvas.style.marginLeft)+ canvas.width*9/10).toString()+'px';
+    //submit.style.top=(canvas.height*(1-0.5)/10 +parseFloat(canvas.style.marginTop)).toString()+'px';
 
     setAngle.style.width=(50*ratio).toString()+'px';
 
@@ -318,7 +340,7 @@
         value=Math.round(crank.length/connectingRod.length*100)/100;
         table(ctx,150*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
 
-        table(ctx,150*ratio,650*ratio,'crank angle',300*ratio,Math.round(angle));
+        table(ctx,150*ratio,650*ratio,'crank angle',300*ratio,360-Math.round(angle));
       }
 
     if(data2.value==1){
@@ -353,7 +375,7 @@
         value=Math.round(crank.length/connectingRod.length*100)/100;
         table(ctx,820*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
 
-        table(ctx,820*ratio,650*ratio,'crank angle',300*ratio,Math.round(angle));
+        table(ctx,820*ratio,650*ratio,'crank angle',300*ratio,360-Math.round(angle));
       }
     }
 
@@ -370,8 +392,10 @@
         connectingRodText.value=connectingRodSlider.value;
         omega2Text.value=omega2Slider.value;
         }
+        if(flag==1){
+            incrementAngle();
+        }
 
-        incrementAngle();
         ctx.clearRect(0, 0, canvas.width , canvas.height);
 
         resize();
