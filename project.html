@@ -25,18 +25,45 @@
   .variableSlider{
     position: absolute;
   }
+/*#submit{
+  left: 100px;
+  top:100px;*/
+}
+
 </style>
 
 
 <body>
 
+  <select id="data1" class="variableSlider">
+    <option value="1">slider</option>
+    <option value="2">phi</option>
+    <option value="3">data</option>
+  </select>
+
+  <select id="data2" class="variableSlider">
+    <option value="2">phi</option>
+    <option value="1">slider</option>
+    <option value="3">data</option>
+  </select>
+
   <canvas  width = "1280" height="606" id = "myCanvas">
  Update browser
 </canvas>
 
+
 <input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="0.99" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
+
+<input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="set()" onchange="set1()">
+<input type="text" id="connectingRodTextId" placeholder="300" class="variableSlider" onfocus="set()" onchange="set1()">
+<input type="text" id="omega2TextId" placeholder="3" class="variableSlider" >
+<input type="text" id="setAngleId" placeholder="angle" class="variableSlider" onchange="stop()">
+
+
+
+<input type="checkbox" id="dirReverse" class="variableSlider">
 
 <input type="text" id="crankLengthTextId" placeholder="crank" class="variableSlider" onchange="set1()">
 <input type="text" id="connectingRodTextId" placeholder="connecting rod" class="variableSlider" onchange="set1()">
@@ -44,7 +71,9 @@
 
 <input type="checkbox" name="antiClockId">
 
+
 <script type="text/javascript">
+
     var Rod = function(length,thickness, canvas, origin = [0,0]){
       this.ctx = canvas.getContext('2d');
       this.length=length;
@@ -88,19 +117,30 @@
         resetOrigin();
     };
     var canvas = document.getElementById('myCanvas');
-    var ctx = document.getElementById('myCanvas').getContext('2d');
+    var ctx = canvas.getContext('2d');
     var crankSlider=document.getElementById("crankSliderId");
     var connectingRodSlider=document.getElementById("connectingRodSliderId");
     var omega2Slider=document.getElementById("omega2SliderId");
+
     var crankLengthText=document.getElementById("crankLengthTextId");
     var connectingRodText=document.getElementById("connectingRodTextId");
     var omega2Text=document.getElementById("omega2TextId");
+
+    var dirRev=document.getElementById("dirReverse");
+    var data1=document.getElementById("data1");
+    var data2=document.getElementById("data2");
+    var setAngle=document.getElementById("setAngleId");
+    var submit=document.getElementById("button");
+
     var angle = 0.0;
     var fps=60;
     var ratio=canvas.width/1280;
     var aspectRatio=16/9;
     var f=0;
     var antiClock=document.getElementById("antiClockId");
+
+    var f=1;
+    var flag=1;
 
     slider = new Slider(200*ratio,50*ratio, canvas, origin = [0]);
     crank = new Rod(200*ratio,10*ratio, canvas, origin = [canvas.width/5,canvas.height/2.75]);
@@ -120,6 +160,27 @@
     	f=0;
     }
 
+    function stop(){
+      flag=0;
+      angle=360-parseFloat(setAngle.value)%360;
+      omega2Slider.value=0;
+    }
+
+    function set1(){
+      crankSlider.value=crankLengthText.value;
+      connectingRodSlider.value=connectingRodText.value;
+      omega2Slider.value=omega2Text.value;
+      f=1;
+    }
+
+    function set(){
+      f=0;
+    }
+
+    function start(){
+      flag=1;
+    }
+
     function convertToRadian(degree){
         return degree*(Math.PI/180);
     }
@@ -127,15 +188,18 @@
         return radian/(Math.PI/180);
     }
     function incrementAngle(){
-    	if(antiClock.checked==1){
-    		angle = angle - parseInt(omega2Slider.value);
-    	}
-    	//else{
-    		 //angle = angle + parseInt(omega2Slider.value);
-        //parseInt converts the string returned by omega2Slider.value to an int
-     //}   
-        if(angle > 360){
-            angle = angle - 360;
+
+      if(dirRev.checked==0){
+        angle = angle + parseFloat(omega2Slider.value);
+      }
+      else {
+        angle = angle - parseFloat(omega2Slider.value);
+      }  //parseInt converts the string returned by omega2Slider.value to an int
+      if(angle > 360){
+        angle = angle - 360;
+      }
+      else if (angle<0) {
+        angle = angle+360;
       }
     }
     function calculatePhi(angle){
@@ -147,10 +211,21 @@
     function resetOrigin(){
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
+
     function sliderResize(tem,l,h) {
-      tem.style.width=(canvas.width/6/h).toString()+'px';
-      tem.style.left=(l*20+l*canvas.width/6 +canvas.width/30+parseInt(canvas.style.marginLeft)).toString()+'px';
-      tem.style.top=(h*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
+
+      if(l<3){
+        tem.style.width=(canvas.width/6/h).toString()+'px';
+        tem.style.left=(l*20+l*canvas.width/6 +canvas.width/30+parseInt(canvas.style.marginLeft)).toString()+'px';
+        tem.style.top=(h*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
+        }
+
+      else {
+        tem.style.width=(canvas.width/10).toString()+'px';
+        tem.style.left=(parseFloat(canvas.style.marginLeft)+ canvas.width*8/10).toString()+'px'
+        tem.style.top=(canvas.height*(h-0.5)/10 +parseFloat(canvas.style.marginTop)).toString()+'px';
+        }
+
       }
     function resize(){
     	if(window.innerHeight > window.innerWidth/aspectRatio){
@@ -165,12 +240,42 @@
     		canvas.style.marginLeft = ((window.innerWidth - canvas.width)/2).toString() + 'px';
     		canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
     	}
+   //for the input sliders
     sliderResize(crankSlider,0,1);
     sliderResize(connectingRodSlider,1,1);
     sliderResize(omega2Slider,2,1);
+
+    //for the input text boxes
     sliderResize(crankLengthText,0,2);
     sliderResize(connectingRodText,1,2);
     sliderResize(omega2Text,2,2);
+
+    //for the checkbox and dropdown menu
+    sliderResize(setAngle,3,1);
+    sliderResize(data1,3,2);
+    sliderResize(data2,3,3);
+
+
+    displayText(ctx,'set angle',1);
+    displayText(ctx,'display 1',2);
+    displayText(ctx,'display 2',3);
+
+    //submit.style.left=(parseFloat(canvas.style.marginLeft)+ canvas.width*9/10).toString()+'px';
+    //submit.style.top=(canvas.height*(1-0.5)/10 +parseFloat(canvas.style.marginTop)).toString()+'px';
+
+    setAngle.style.width=(50*ratio).toString()+'px';
+
+    dirRev.style.left=(parseFloat(canvas.style.marginLeft)+canvas.width*5/10).toString()+'px';
+    dirRev.style.top=(parseFloat(canvas.style.marginTop)+canvas.height*2/10).toString()+'px';
+    ctx.fillText('counterclockwise',canvas.width*5.5/10,canvas.height*2.25/10);
+    }
+
+    function displayText(ctx,text,h){
+      ctx.font='20px ariel';
+      var max=canvas.width/10;
+      var i=canvas.width*7/10;
+      var j=canvas.height*(h-0.25)/10;
+      ctx.fillText(text,i,j,max);
     }
     function drawAxis(ctx,startX,startY,endX,endY){
       //y axis
@@ -196,34 +301,106 @@
           ctx.closePath();
         }
     }
+
+
+    function table(ctx,i,j,text,offset,value){
+      ctx.fillText(text,i,j,canvas.width/5);
+      ctx.fillText(value,i+offset,j,canvas.width/8);
+    }
+
     function drawGraph(){
-      var i = canvas.width - 100*ratio;
-      var j = canvas.height;
+
       ctx.lineWidth=2;
       //axis for slider graph
-      drawAxis(ctx,[i-930*ratio,j-50*ratio],
-      [i-930*ratio,j-50*ratio],[i-600*ratio,j-50*ratio],[i-930*ratio,(j-(10+sliderPositionFromCrank(0)/3)*ratio)]);
+      if(data1.value==1){
+        drawAxis(ctx,[canvas.width/5,canvas.height*9/10],
+        [canvas.width/5,canvas.height*9/10],[canvas.width/2,canvas.height*9/10],[canvas.width/5,(canvas.height*9/10-(sliderPositionFromCrank(0)/3.5)*ratio)]);
+
       //slider vs time graph
-      drawDynamicGraph(ctx,i-570*ratio,j+350*ratio,sliderPositionFromCrank,(370+crank.length/10)*ratio,1/3.5);
-      //axis for phi graph
-      drawAxis(ctx,[i-360*ratio,j-150*ratio],[i-360*ratio,j-150*ratio-200*calculatePhi(90)*ratio],[i+10*ratio,j-150*ratio],
-      [i-360*ratio,j-150*ratio-200*calculatePhi(270)*ratio])
+        drawDynamicGraph(ctx,615*ratio,980*ratio,sliderPositionFromCrank,(300+crank.length/10)*ratio,1/3);
+      }
+    else if (data1.value==2) {
+        //axis for phi graph
+      drawAxis(ctx,[250*ratio,570*ratio],[250*ratio,570*ratio-200*calculatePhi(90)*ratio],[610*ratio,570*ratio],
+      [250*ratio,570*ratio-200*calculatePhi(270)*ratio]);
+
       //phi vs time graph
-      drawDynamicGraph(ctx,i,j,calculatePhi,150*ratio,200);
+      drawDynamicGraph(ctx,610*ratio,720*ratio,calculatePhi,150*ratio,200);
+      }
+
+      else {
+
+        var value=Math.round(calculatePhi(angle)*100)/100;
+        table(ctx,150*ratio,400*ratio,'phi :',300*ratio,value);
+
+        value=Math.round(sliderPositionFromCrank(angle)*100)/100;
+        table(ctx,150*ratio,450*ratio,'slider Position From Crank :',300*ratio,value);
+
+        table(ctx,150*ratio,500*ratio,'slider min :',300*ratio,sliderPositionFromCrank(180));
+
+        table(ctx,150*ratio,550*ratio,'slider min :',300*ratio,sliderPositionFromCrank(0));
+
+        value=Math.round(crank.length/connectingRod.length*100)/100;
+        table(ctx,150*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
+
+        table(ctx,150*ratio,650*ratio,'crank angle',300*ratio,360-Math.round(angle));
+      }
+
+    if(data2.value==1){
+        //axis for slider graph
+      drawAxis(ctx,[820*ratio,canvas.height*9/10],
+      [820*ratio,canvas.height*9/10],[1200*ratio,canvas.height*9/10],[820*ratio,(canvas.height*9/10-(sliderPositionFromCrank(0)/3.5)*ratio)]);
+
+      //slider vs time graph
+      drawDynamicGraph(ctx,1180*ratio,980*ratio,sliderPositionFromCrank,(300+crank.length/10)*ratio,1/3);
+    }
+
+      else if(data2.value==2){
+      //axis for phi graph
+        drawAxis(ctx,[820*ratio,570*ratio],[820*ratio,571*ratio-200*calculatePhi(90)*ratio],[1200*ratio,570*ratio],
+        [820*ratio,570*ratio-200*calculatePhi(270)*ratio])
+
+
+      //phi vs time graph
+        drawDynamicGraph(ctx,1180*ratio,720*ratio,calculatePhi,150*ratio,200);
+      }
+
+      else {
+        value=Math.round(calculatePhi(angle)*100)/100;
+        table(ctx,820*ratio,400*ratio,'phi :',300*ratio,value);
+
+        value=Math.round(sliderPositionFromCrank(angle)*100)/100;
+        table(ctx,820*ratio,450*ratio,'slider Position From Crank :',300*ratio,value);
+
+        table(ctx,820*ratio,500*ratio,'slider min :',300*ratio,sliderPositionFromCrank(180));
+
+        table(ctx,820*ratio,550*ratio,'slider min :',300*ratio,sliderPositionFromCrank(0));
+
+        value=Math.round(crank.length/connectingRod.length*100)/100;
+        table(ctx,820*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
+
+        table(ctx,820*ratio,650*ratio,'crank angle',300*ratio,360-Math.round(angle));
+      }
     }
     function drawTarget(){
         ratio=canvas.width/1280;
-    	  resize();
+
         crank.length=parseInt(crankSlider.value);
         connectingRod.length=parseInt(connectingRodSlider.value);
-        
+
         if(f==1){
-        	crankLengthText.value=crankSlider.value;
-        	connectingRodText.value=connectingRodSlider.value;
-        	omega2Text.value=omega2Slider.value;
+        crankLengthText.value=crankSlider.value;
+        connectingRodText.value=connectingRodSlider.value;
+        omega2Text.value=omega2Slider.value;
         }
-        incrementAngle();
+        if(flag==1){
+            incrementAngle();
+        }
+
         ctx.clearRect(0, 0, canvas.width , canvas.height);
+
+        resize();
+
       	crank.attach([canvas.width/5,canvas.height/2.75]);
       	crank.rotate(angle);
       	slider.attach([canvas.width/5 + sliderPositionFromCrank(angle)*ratio, canvas.height/2.75]);
