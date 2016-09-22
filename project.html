@@ -54,20 +54,16 @@
 
 <input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
-<input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()" onchange="start()">
+<input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 
-<input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="set()" onchange="set1()">
-<input type="text" id="connectingRodTextId" placeholder="300" class="variableSlider" onfocus="set()" onchange="set1()">
-<input type="text" id="omega2TextId" placeholder="3" class="variableSlider" onchange='start()' >
+<input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="f2()" onchange="set1()">
+<input type="text" id="connectingRodTextId" placeholder="300" class="variableSlider" onfocus="f2()" onchange="set1()">
+<input type="text" id="omega2TextId" placeholder="3" class="variableSlider" onfocus='f2()' onchange='set1()'>
 <input type="text" id="setAngleId" placeholder="angle" class="variableSlider" onblur="stop()">
 
 
 
 <input type="checkbox" id="dirReverse" class="variableSlider">
-
-<input type="text" id="crankLengthTextId" placeholder="crank" class="variableSlider" onchange="set1()">
-<input type="text" id="connectingRodTextId" placeholder="connecting rod" class="variableSlider" onchange="set1()">
-<input type="text" id="omega2TextId" placeholder="speed" class="variableSlider" onchange="set1()">
 
 <input type="checkbox" name="antiClockId">
 
@@ -145,40 +141,27 @@
     slider = new Slider(200*ratio,50*ratio, canvas, origin = [0]);
     crank = new Rod(200*ratio,10*ratio, canvas, origin = [canvas.width/5,canvas.height/2.75]);
     connectingRod = new Rod(300*ratio,10*ratio, canvas);
-    function set1(){
-      crankSlider.value=crankLengthText.value;
-      connectingRodSlider.value=connectingRodText.value;
-      omega2Slider.value=omega2Text.value;
 
-    }
-
+//starts updating text box values from slider
     function f1(){
     	f=1;
     }
-
+//stops updating text box from slider
     function f2(){
     	f=0;
     }
-
+//stops incrementing the value of angle
     function stop(){
       flag=0;
       angle=360-parseFloat(setAngle.value)%360;
       omega2Slider.value=0;
     }
-
+//gets slider value from text box
     function set1(){
       crankSlider.value=crankLengthText.value;
       connectingRodSlider.value=connectingRodText.value;
       omega2Slider.value=omega2Text.value;
       f=1;
-    }
-
-    function set(){
-      f=0;
-    }
-
-    function start(){
-      flag=1;
     }
 
     function convertToRadian(degree){
@@ -217,7 +200,7 @@
       if(l<3){
         tem.style.width=(canvas.width/6/h).toString()+'px';
         tem.style.left=(l*20+l*canvas.width/6 +canvas.width/30+parseInt(canvas.style.marginLeft)).toString()+'px';
-        tem.style.top=(h*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
+        tem.style.top=((h+1)*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
         }
 
       else {
@@ -260,14 +243,15 @@
     displayText(ctx,'display 1',2);
     displayText(ctx,'display 2',3);
 
-    //submit.style.left=(parseFloat(canvas.style.marginLeft)+ canvas.width*9/10).toString()+'px';
-    //submit.style.top=(canvas.height*(1-0.5)/10 +parseFloat(canvas.style.marginTop)).toString()+'px';
+    ctx.fillText('crank length',canvas.width/20,canvas.height/20,canvas.width/10);
+    ctx.fillText('connectingRod length',canvas.width*4.5/20,canvas.height/20,canvas.width/10);
+    ctx.fillText('angular speed',canvas.width*8/20,canvas.height/20,canvas.width/10);
 
     setAngle.style.width=(50*ratio).toString()+'px';
 
     dirRev.style.left=(parseFloat(canvas.style.marginLeft)+canvas.width*5/10).toString()+'px';
     dirRev.style.top=(parseFloat(canvas.style.marginTop)+canvas.height*2/10).toString()+'px';
-    ctx.fillText('counterclockwise',canvas.width*5.5/10,canvas.height*2.25/10);
+    ctx.fillText('counterclockwise',canvas.width*5.5/10,canvas.height*2.25/10,canvas.width/10);
     }
 
     function displayText(ctx,text,h){
@@ -392,6 +376,10 @@
         crankLengthText.value=crankSlider.value;
         connectingRodText.value=connectingRodSlider.value;
         omega2Text.value=omega2Slider.value;
+        }
+        if((parseFloat(omega2Slider.value)!=0)&&(flag==0)){
+          flag=1;
+         setAngle.value="";
         }
         if(flag==1){
             incrementAngle();
