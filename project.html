@@ -64,6 +64,8 @@
 
 <script type="text/javascript">
 
+
+
     var Rod = function(length,thickness, canvas, origin = [0,0]){
       this.ctx = canvas.getContext('2d');
       this.length=length;
@@ -167,7 +169,7 @@
       if(angle > 360){
         angle = angle - 360;
       }
-      else if (angle<-360) {
+      else if (angle<0) {
         angle = angle+360;
       }
     }
@@ -193,8 +195,9 @@
         }
 
       else {
-        tem.style.left=(canvas.width*9/10).toString()+'px'
-        tem.style.top=(canvas.height*h/10).toString()+'px';
+        tem.style.width=(canvas.width/10).toString()+'px';
+        tem.style.left=(parseFloat(canvas.style.marginLeft)+ canvas.width*8/10).toString()+'px'
+        tem.style.top=(canvas.height*(h-0.5)/10 +parseFloat(canvas.style.marginTop)).toString()+'px';
         }
       }
 
@@ -227,8 +230,14 @@
     sliderResize(dirRev,3,1);
     sliderResize(data1,3,2);
     sliderResize(data2,3,3);
+    }
 
-    ctx.fillText("hello",100,700);
+    function displayText(ctx,text,h){
+      ctx.font='20px ariel';
+      var max=canvas.width/10;
+      var i=canvas.width*7/10;
+      var j=canvas.height*(h-0.25)/10;
+      ctx.fillText(text,i,j,max);
     }
 
     function drawAxis(ctx,startX,startY,endX,endY){
@@ -257,6 +266,11 @@
         }
     }
 
+    function table(ctx,i,j,text,offset,value){
+      ctx.fillText(text,i,j,canvas.width/5);
+      ctx.fillText(value,i+offset,j,canvas.width/8);
+    }
+
     function drawGraph(){
 
       ctx.lineWidth=2;
@@ -275,8 +289,25 @@
 
       //phi vs time graph
       drawDynamicGraph(ctx,610*ratio,720*ratio,calculatePhi,150*ratio,200);
+      }
 
-    }
+      else {
+
+        var value=Math.round(calculatePhi(angle)*100)/100;
+        table(ctx,150*ratio,400*ratio,'phi :',300*ratio,value);
+
+        value=Math.round(sliderPositionFromCrank(angle)*100)/100;
+        table(ctx,150*ratio,450*ratio,'slider Position From Crank :',300*ratio,value);
+
+        table(ctx,150*ratio,500*ratio,'slider min :',300*ratio,sliderPositionFromCrank(180));
+
+        table(ctx,150*ratio,550*ratio,'slider min :',300*ratio,sliderPositionFromCrank(0));
+
+        value=Math.round(crank.length/connectingRod.length*100)/100;
+        table(ctx,150*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
+
+        table(ctx,150*ratio,650*ratio,'crank angle',300*ratio,Math.round(angle));
+      }
 
     if(data2.value==1){
         //axis for slider graph
@@ -294,6 +325,23 @@
 
       //phi vs time graph
         drawDynamicGraph(ctx,1180*ratio,720*ratio,calculatePhi,150*ratio,200);
+      }
+
+      else {
+        value=Math.round(calculatePhi(angle)*100)/100;
+        table(ctx,820*ratio,400*ratio,'phi :',300*ratio,value);
+
+        value=Math.round(sliderPositionFromCrank(angle)*100)/100;
+        table(ctx,820*ratio,450*ratio,'slider Position From Crank :',300*ratio,value);
+
+        table(ctx,820*ratio,500*ratio,'slider min :',300*ratio,sliderPositionFromCrank(180));
+
+        table(ctx,820*ratio,550*ratio,'slider min :',300*ratio,sliderPositionFromCrank(0));
+
+        value=Math.round(crank.length/connectingRod.length*100)/100;
+        table(ctx,820*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
+
+        table(ctx,820*ratio,650*ratio,'crank angle',300*ratio,Math.round(angle));
       }
     }
 
@@ -313,6 +361,10 @@
 
         incrementAngle();
         ctx.clearRect(0, 0, canvas.width , canvas.height);
+
+        displayText(ctx,'change rot',1);
+        displayText(ctx,'display 1',2);
+        displayText(ctx,'display 2',3);
 
       	crank.attach([canvas.width/5,canvas.height/2.75]);
       	crank.rotate(angle);
