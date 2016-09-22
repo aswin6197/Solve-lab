@@ -43,8 +43,8 @@
   </select>
 
   <select id="data2" class="variableSlider">
-    <option value="1">slider</option>
     <option value="2">phi</option>
+    <option value="1">slider</option>
     <option value="3">data</option>
   </select>
 
@@ -59,6 +59,7 @@
 <input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="set()" onchange="set1()">
 <input type="text" id="connectingRodTextId" placeholder="300" class="variableSlider" onfocus="set()" onchange="set1()">
 <input type="text" id="omega2TextId" placeholder="3" class="variableSlider" onfocus="set()" onchange="set1()">
+<input type="text" id="setAngleId" placeholder="angle" class="variableSlider">
 
 <input type="checkbox" id="dirReverse" class="variableSlider">
 
@@ -127,6 +128,7 @@
     var dirRev=document.getElementById("dirReverse");
     var data1=document.getElementById("data1");
     var data2=document.getElementById("data2");
+    var setAngle=document.getElementById("setAngleId");
 
     var angle = 0.0;
     var fps=60;
@@ -227,9 +229,19 @@
     sliderResize(omega2Text,2,2);
 
     //for the checkbox and dropdown menu
-    sliderResize(dirRev,3,1);
+    sliderResize(setAngle,3,1);
     sliderResize(data1,3,2);
     sliderResize(data2,3,3);
+
+    displayText(ctx,'set angle',1);
+    displayText(ctx,'display 1',2);
+    displayText(ctx,'display 2',3);
+
+    setAngle.style.width=(50*ratio).toString()+'px';
+
+    dirRev.style.left=(parseFloat(canvas.style.marginLeft)+canvas.width*5/10).toString()+'px';
+    dirRev.style.top=(parseFloat(canvas.style.marginTop)+canvas.height*2/10).toString()+'px';
+    ctx.fillText('counterclockwise',canvas.width*5.5/10,canvas.height*2.25/10);
     }
 
     function displayText(ctx,text,h){
@@ -348,7 +360,7 @@
     function drawTarget(){
 
         ratio=canvas.width/1280;
-    	  resize();
+
 
         crank.length=parseInt(crankSlider.value);
         connectingRod.length=parseInt(connectingRodSlider.value);
@@ -362,9 +374,8 @@
         incrementAngle();
         ctx.clearRect(0, 0, canvas.width , canvas.height);
 
-        displayText(ctx,'change rot',1);
-        displayText(ctx,'display 1',2);
-        displayText(ctx,'display 2',3);
+        resize();
+
 
       	crank.attach([canvas.width/5,canvas.height/2.75]);
       	crank.rotate(angle);
