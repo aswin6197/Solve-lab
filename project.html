@@ -36,15 +36,15 @@
 <body>
 
   <select id="data1" class="variableSlider">
-    <option value="1">slider</option>
-    <option value="2">phi</option>
-    <option value="3">data</option>
+    <option value="1">Slider</option>
+    <option value="2">Phi</option>
+    <option value="3">Data</option>
   </select>
 
   <select id="data2" class="variableSlider">
-    <option value="2">phi</option>
-    <option value="1">slider</option>
-    <option value="3">data</option>
+    <option value="2">Phi</option>
+    <option value="1">Slider</option>
+    <option value="3">Data</option>
   </select>
 
   <canvas  width = "1280" height="606" id = "myCanvas">
@@ -238,24 +238,25 @@
     sliderResize(data1,3,2);
     sliderResize(data2,3,3);
 
+    ctx.font='16px sans serif';
 
-    displayText(ctx,'set angle',1);
-    displayText(ctx,'display 1',2);
-    displayText(ctx,'display 2',3);
+    displayText(ctx,'Set Angle',1);
+    displayText(ctx,'Display 1',2);
+    displayText(ctx,'Display 2',3);
 
-    ctx.fillText('crank length',canvas.width/20,canvas.height/20,canvas.width/10);
-    ctx.fillText('connectingRod length',canvas.width*4.5/20,canvas.height/20,canvas.width/10);
-    ctx.fillText('angular speed',canvas.width*8/20,canvas.height/20,canvas.width/10);
+    ctx.fillText('Crank Length',canvas.width/20,canvas.height/20,canvas.width/10);
+    ctx.fillText('Connecting Rod',canvas.width*4.5/20,canvas.height/20,canvas.width/10);
+    ctx.fillText('Angular Speed',canvas.width*8/20,canvas.height/20,canvas.width/10);
 
     setAngle.style.width=(50*ratio).toString()+'px';
 
     dirRev.style.left=(parseFloat(canvas.style.marginLeft)+canvas.width*5/10).toString()+'px';
     dirRev.style.top=(parseFloat(canvas.style.marginTop)+canvas.height*2/10).toString()+'px';
-    ctx.fillText('counterclockwise',canvas.width*5.5/10,canvas.height*2.25/10,canvas.width/10);
+    ctx.fillText('Counter Clockwise',canvas.width*5.5/10,canvas.height*2.25/10,canvas.width/10);
     }
 
     function displayText(ctx,text,h){
-      ctx.font='20px ariel';
+      ctx.font='16px sans serif';
       var max=canvas.width/10;
       var i=canvas.width*7/10;
       var j=canvas.height*(h-0.25)/10;
@@ -315,19 +316,19 @@
       else {
 
         var value=Math.round(calculatePhi(angle)*100)/100;
-        table(ctx,150*ratio,400*ratio,'phi :',300*ratio,value);
+        table(ctx,150*ratio,400*ratio,'Phi :',300*ratio,value);
 
         value=Math.round(sliderPositionFromCrank(angle)*100)/100;
-        table(ctx,150*ratio,450*ratio,'slider Position From Crank :',300*ratio,value);
+        table(ctx,150*ratio,450*ratio,'Slider Position from Crank :',300*ratio,value);
 
-        table(ctx,150*ratio,500*ratio,'slider min :',300*ratio,sliderPositionFromCrank(180));
+        table(ctx,150*ratio,500*ratio,'Slider Min :',300*ratio,sliderPositionFromCrank(180));
 
-        table(ctx,150*ratio,550*ratio,'slider min :',300*ratio,sliderPositionFromCrank(0));
+        table(ctx,150*ratio,550*ratio,'Slider Max :',300*ratio,sliderPositionFromCrank(0));
 
         value=Math.round(crank.length/connectingRod.length*100)/100;
-        table(ctx,150*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
+        table(ctx,150*ratio,600*ratio,'Crank Connecting Rod Ratio :',300*ratio,value);
 
-        table(ctx,150*ratio,650*ratio,'crank angle',300*ratio,360-Math.round(angle));
+        table(ctx,150*ratio,650*ratio,'Crank Angle',300*ratio,360-Math.round(angle));
       }
 
     if(data2.value==1){
@@ -351,19 +352,19 @@
 
       else {
         value=Math.round(calculatePhi(angle)*100)/100;
-        table(ctx,820*ratio,400*ratio,'phi :',300*ratio,value);
+        table(ctx,820*ratio,400*ratio,'Phi :',300*ratio,value);
 
         value=Math.round(sliderPositionFromCrank(angle)*100)/100;
-        table(ctx,820*ratio,450*ratio,'slider Position From Crank :',300*ratio,value);
+        table(ctx,820*ratio,450*ratio,'Slider Position from Crank :',300*ratio,value);
 
-        table(ctx,820*ratio,500*ratio,'slider min :',300*ratio,sliderPositionFromCrank(180));
+        table(ctx,820*ratio,500*ratio,'Slider Min :',300*ratio,sliderPositionFromCrank(180));
 
-        table(ctx,820*ratio,550*ratio,'slider min :',300*ratio,sliderPositionFromCrank(0));
+        table(ctx,820*ratio,550*ratio,'Slider Max :',300*ratio,sliderPositionFromCrank(0));
 
         value=Math.round(crank.length/connectingRod.length*100)/100;
-        table(ctx,820*ratio,600*ratio,'crank connectingRod ratio :',300*ratio,value);
+        table(ctx,820*ratio,600*ratio,'Crank Connecting Rod Ratio :',300*ratio,value);
 
-        table(ctx,820*ratio,650*ratio,'crank angle',300*ratio,360-Math.round(angle));
+        table(ctx,820*ratio,650*ratio,'Crank Angle',300*ratio,360-Math.round(angle));
       }
     }
     function drawTarget(){
