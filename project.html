@@ -25,10 +25,6 @@
   .variableSlider{
     position: absolute;
   }
-/*#submit{
-  left: 100px;
-  top:100px;*/
-}
 
 </style>
 
@@ -61,61 +57,11 @@
 <input type="text" id="omega2TextId" placeholder="3" class="variableSlider" onfocus='f2()' onchange='set1()'>
 <input type="text" id="setAngleId" placeholder="angle" class="variableSlider" onblur="stop()">
 
-
-
 <input type="checkbox" id="dirReverse" class="variableSlider">
-
-<input type="checkbox" name="antiClockId">
 
 <script src="object.js"></script>
 <script type="text/javascript">
-/*
-    var Rod = function(length,thickness, canvas, origin = [0,0]){
-      this.ctx = canvas.getContext('2d');
-      this.length=length;
-      this.thickness=thickness;
-      this.origin = origin;
-    };
-    Rod.prototype.rotate = function(angle = 0, drawCircumference = true){
-    	this.ctx.lineWidth = this.thickness*ratio;
-        this.ctx.translate(this.origin[0], this.origin[1]);
-        this.ctx.rotate(convertToRadian(angle));
-        this.ctx.beginPath();
-        this.ctx.moveTo(0,0);
-        this.ctx.lineTo(this.length*ratio,0);
-        this.ctx.stroke();
-        this.ctx.closePath();
-        if(drawCircumference == true){
-        	this.ctx.beginPath();
-        	this.ctx.arc(0,0,this.length*ratio, 0, 2*Math.PI, false);
-        	this.ctx.lineWidth = this.thickness/2;
-        	this.ctx.stroke();
-        	this.ctx.closePath();
-        }
-      	resetOrigin();
-    };
-    Rod.prototype.attach = function(point = [0,0]){
-    	this.origin = point;
-    };
-    var Slider = function(length,breadth, canvas, origin = [0,0],rot=[0,0]){
-      this.ctx = canvas.getContext('2d');
-      this.length=length;
-      this.breadth=breadth;
-      this.origin = origin;
-      this.rot=rot;
-    };
-    Slider.prototype.attach = function(point = [0,0],rot){
-    	this.origin = point;
-      this.rot=rot;
-    };
-    Slider.prototype.rotate = function(angle = 0){
-        this.ctx.translate(this.rot[0], this.rot[1]);
-        this.ctx.rotate(convertToRadian(angle));
-        resetOrigin();
-        this.ctx.translate(this.origin[0],this.origin[1]);
-        this.ctx.strokeRect(0, 0, this.length*ratio, this.breadth*ratio);
-        resetOrigin();
-    };*/
+
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
     var crankSlider=document.getElementById("crankSliderId");
@@ -199,21 +145,32 @@
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
-    function sliderResize(tem,l,h) {
+    function inputResize(tem,l,h) {
 
       if(l<3){
+        //for slider and text box
         tem.style.width=(canvas.width/6/h).toString()+'px';
         tem.style.left=(l*20+l*canvas.width/6 +canvas.width/30+parseInt(canvas.style.marginLeft)).toString()+'px';
         tem.style.top=((h+1)*canvas.height/20 + parseInt(canvas.style.marginTop)).toString()+'px';
         }
 
       else {
+        //for the dropdown and angle
         tem.style.width=(canvas.width/10).toString()+'px';
         tem.style.left=(parseFloat(canvas.style.marginLeft)+ canvas.width*8/10).toString()+'px'
         tem.style.top=(canvas.height*(h-0.5)/10 +parseFloat(canvas.style.marginTop)).toString()+'px';
         }
 
       }
+
+      function displayText(ctx,text,ri,rj){
+        ctx.font='16px sans serif';
+        var max=canvas.width/10;
+        var i=canvas.width*ri;
+        var j=canvas.height*rj;
+        ctx.fillText(text,i,j,max);
+      }
+
     function resize(){
     	if(window.innerHeight > window.innerWidth/aspectRatio){
     		canvas.width  = window.innerWidth;
@@ -228,29 +185,30 @@
     		canvas.style.marginTop = ((window.innerHeight - canvas.height)/2).toString() + 'px';
     	}
    //for the input sliders
-    sliderResize(crankSlider,0,1);
-    sliderResize(connectingRodSlider,1,1);
-    sliderResize(omega2Slider,2,1);
+    inputResize(crankSlider,0,1);
+    inputResize(connectingRodSlider,1,1);
+    inputResize(omega2Slider,2,1);
 
     //for the input text boxes
-    sliderResize(crankLengthText,0,2);
-    sliderResize(connectingRodText,1,2);
-    sliderResize(omega2Text,2,2);
+    inputResize(crankLengthText,0,2);
+    inputResize(connectingRodText,1,2);
+    inputResize(omega2Text,2,2);
 
-    //for the checkbox and dropdown menu
-    sliderResize(setAngle,3,1);
-    sliderResize(data1,3,2);
-    sliderResize(data2,3,3);
+    //for the angle and dropdown menu
+    inputResize(setAngle,3,1);
+    inputResize(data1,3,2);
+    inputResize(data2,3,3);
 
     ctx.font='16px sans serif';
+    //for the dropdown menu text
+    displayText(ctx,'Set Angle',7/10,(1-0.25)/10);
+    displayText(ctx,'Display 1',7/10,(2-0.25)/10);
+    displayText(ctx,'Display 2',7/10,(3-0.25)/10);
 
-    displayText(ctx,'Set Angle',1);
-    displayText(ctx,'Display 1',2);
-    displayText(ctx,'Display 2',3);
-
-    ctx.fillText('Crank Length',canvas.width/20,canvas.height/20,canvas.width/10);
-    ctx.fillText('Connecting Rod',canvas.width*4.5/20,canvas.height/20,canvas.width/10);
-    ctx.fillText('Angular Speed',canvas.width*8/20,canvas.height/20,canvas.width/10);
+    //text near the sliders
+    displayText(ctx,'Crank Length',1/20,1/20);
+    displayText(ctx,'Connecting Rod',4.5/20,1/20);
+    displayText(ctx,'Angular Speed',8/20,1/20)
 
     setAngle.style.width=(50*ratio).toString()+'px';
 
@@ -259,13 +217,6 @@
     ctx.fillText('Counter Clockwise',canvas.width*5.5/10,canvas.height*2.25/10,canvas.width/10);
     }
 
-    function displayText(ctx,text,h){
-      ctx.font='16px sans serif';
-      var max=canvas.width/10;
-      var i=canvas.width*7/10;
-      var j=canvas.height*(h-0.25)/10;
-      ctx.fillText(text,i,j,max);
-    }
     function drawAxis(ctx,startX,startY,endX,endY){
       //y axis
       ctx.beginPath();
@@ -280,6 +231,7 @@
       ctx.stroke();
       ctx.closePath();
     }
+
     function drawDynamicGraph(ctx,i,j,fn,adjust,scaling){
         var k;
         for(k=-360;k<=0;k++){
@@ -296,6 +248,7 @@
       ctx.fillText(text,i,j,canvas.width/5);
       ctx.fillText(value,i+offset,j,canvas.width/8);
     }
+
     function simpleTable(ctx,len){
       var value=Math.round(calculatePhi(angle)*100)/100;
       table(ctx,len*ratio,400*ratio,'Phi :',300*ratio,value);
@@ -349,7 +302,6 @@
       //axis for phi graph
         drawAxis(ctx,[820*ratio,570*ratio],[820*ratio,571*ratio-200*calculatePhi(90)*ratio],[1200*ratio,570*ratio],
         [820*ratio,570*ratio-200*calculatePhi(270)*ratio])
-
       //phi vs time graph
         drawDynamicGraph(ctx,1180*ratio,720*ratio,calculatePhi,150*ratio,200);
       }
@@ -358,6 +310,7 @@
         simpleTable(ctx,820);
       }
     }
+
     function drawTarget(){
         ratio=canvas.width/1280;
 
@@ -389,6 +342,7 @@
       	connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
       	drawGraph();
     }
+
     setInterval(drawTarget, 1000/fps);
 </script>
 </body>
