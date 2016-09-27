@@ -67,9 +67,9 @@
 
 <input type="checkbox" name="antiClockId">
 
-
+<script src="object.js"></script>
 <script type="text/javascript">
-
+/*
     var Rod = function(length,thickness, canvas, origin = [0,0]){
       this.ctx = canvas.getContext('2d');
       this.length=length;
@@ -97,21 +97,25 @@
     Rod.prototype.attach = function(point = [0,0]){
     	this.origin = point;
     };
-    var Slider = function(length,breadth, canvas, origin = [0,0]){
+    var Slider = function(length,breadth, canvas, origin = [0,0],rot=[0,0]){
       this.ctx = canvas.getContext('2d');
       this.length=length;
       this.breadth=breadth;
       this.origin = origin;
+      this.rot=rot;
     };
-    Slider.prototype.attach = function(point = [0,0]){
+    Slider.prototype.attach = function(point = [0,0],rot){
     	this.origin = point;
+      this.rot=rot;
     };
     Slider.prototype.rotate = function(angle = 0){
-        this.ctx.translate(this.origin[0], this.origin[1]);
+        this.ctx.translate(this.rot[0], this.rot[1]);
         this.ctx.rotate(convertToRadian(angle));
-        this.ctx.strokeRect(-this.length/2*ratio, -this.breadth/2*ratio, this.length*ratio, this.breadth*ratio);
         resetOrigin();
-    };
+        this.ctx.translate(this.origin[0],this.origin[1]);
+        this.ctx.strokeRect(0, 0, this.length*ratio, this.breadth*ratio);
+        resetOrigin();
+    };*/
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
     var crankSlider=document.getElementById("crankSliderId");
@@ -292,6 +296,22 @@
       ctx.fillText(text,i,j,canvas.width/5);
       ctx.fillText(value,i+offset,j,canvas.width/8);
     }
+    function simpleTable(ctx,len){
+      var value=Math.round(calculatePhi(angle)*100)/100;
+      table(ctx,len*ratio,400*ratio,'Phi :',300*ratio,value);
+
+      value=Math.round(sliderPositionFromCrank(angle)*100)/100;
+      table(ctx,len*ratio,450*ratio,'Slider Position from Crank :',300*ratio,value);
+
+      table(ctx,len*ratio,500*ratio,'Slider Min :',300*ratio,sliderPositionFromCrank(180));
+
+      table(ctx,len*ratio,550*ratio,'Slider Max :',300*ratio,sliderPositionFromCrank(0));
+
+      value=Math.round(crank.length/connectingRod.length*100)/100;
+      table(ctx,len*ratio,600*ratio,'Crank Connecting Rod Ratio :',300*ratio,value);
+
+      table(ctx,len*ratio,650*ratio,'Crank Angle',300*ratio,360-Math.round(angle));
+    }
 
     function drawGraph(){
 
@@ -314,28 +334,13 @@
       }
 
       else {
-
-        var value=Math.round(calculatePhi(angle)*100)/100;
-        table(ctx,150*ratio,400*ratio,'Phi :',300*ratio,value);
-
-        value=Math.round(sliderPositionFromCrank(angle)*100)/100;
-        table(ctx,150*ratio,450*ratio,'Slider Position from Crank :',300*ratio,value);
-
-        table(ctx,150*ratio,500*ratio,'Slider Min :',300*ratio,sliderPositionFromCrank(180));
-
-        table(ctx,150*ratio,550*ratio,'Slider Max :',300*ratio,sliderPositionFromCrank(0));
-
-        value=Math.round(crank.length/connectingRod.length*100)/100;
-        table(ctx,150*ratio,600*ratio,'Crank Connecting Rod Ratio :',300*ratio,value);
-
-        table(ctx,150*ratio,650*ratio,'Crank Angle',300*ratio,360-Math.round(angle));
+        simpleTable(ctx,150);
       }
 
     if(data2.value==1){
         //axis for slider graph
       drawAxis(ctx,[820*ratio,canvas.height*9/10],
       [820*ratio,canvas.height*9/10],[1200*ratio,canvas.height*9/10],[820*ratio,(canvas.height*9/10-(sliderPositionFromCrank(0)/3.5)*ratio)]);
-
       //slider vs time graph
       drawDynamicGraph(ctx,1180*ratio,980*ratio,sliderPositionFromCrank,(300+crank.length/10)*ratio,1/3);
     }
@@ -345,26 +350,12 @@
         drawAxis(ctx,[820*ratio,570*ratio],[820*ratio,571*ratio-200*calculatePhi(90)*ratio],[1200*ratio,570*ratio],
         [820*ratio,570*ratio-200*calculatePhi(270)*ratio])
 
-
       //phi vs time graph
         drawDynamicGraph(ctx,1180*ratio,720*ratio,calculatePhi,150*ratio,200);
       }
 
       else {
-        value=Math.round(calculatePhi(angle)*100)/100;
-        table(ctx,820*ratio,400*ratio,'Phi :',300*ratio,value);
-
-        value=Math.round(sliderPositionFromCrank(angle)*100)/100;
-        table(ctx,820*ratio,450*ratio,'Slider Position from Crank :',300*ratio,value);
-
-        table(ctx,820*ratio,500*ratio,'Slider Min :',300*ratio,sliderPositionFromCrank(180));
-
-        table(ctx,820*ratio,550*ratio,'Slider Max :',300*ratio,sliderPositionFromCrank(0));
-
-        value=Math.round(crank.length/connectingRod.length*100)/100;
-        table(ctx,820*ratio,600*ratio,'Crank Connecting Rod Ratio :',300*ratio,value);
-
-        table(ctx,820*ratio,650*ratio,'Crank Angle',300*ratio,360-Math.round(angle));
+        simpleTable(ctx,820);
       }
     }
     function drawTarget(){
@@ -392,7 +383,7 @@
 
       	crank.attach([canvas.width/5,canvas.height/2.75]);
       	crank.rotate(angle);
-      	slider.attach([canvas.width/5 + sliderPositionFromCrank(angle)*ratio, canvas.height/2.75]);
+      	slider.attach([canvas.width/5 + sliderPositionFromCrank(angle)*ratio- slider.length/2*ratio, canvas.height/2.75 - slider.breadth/2*ratio],[slider.length/2,slider.breadth/2]);
       	slider.rotate(0);
       	connectingRod.attach([canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))*ratio, canvas.height/2.75 + crank.length*Math.sin(convertToRadian(angle))*ratio]);
       	connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
