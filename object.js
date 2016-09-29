@@ -1,15 +1,14 @@
-var imported = document.createElement('functions');
-imported.src = 'functions.js';
-document.head.appendChild(imported);
-var Rod = function(length,thickness, canvas, origin = [0,0]){
+
+var Rod = function(length,thickness, canvas,left=[0,0],right=[0,0]){
     this.ctx = canvas.getContext('2d');
     this.length=length;
     this.thickness=thickness;
-    this.origin = origin;
+    this.left=left;
+    this.right=right;
     };
   Rod.prototype.rotate = function(angle = 0, drawCircumference = true){
     this.ctx.lineWidth = this.thickness*ratio;
-    this.ctx.translate(this.origin[0], this.origin[1]);
+    this.ctx.translate(this.left[0], this.left[1]);
     this.ctx.rotate(convertToRadian(angle));
     this.ctx.beginPath();
     this.ctx.moveTo(0,0);
@@ -23,10 +22,11 @@ var Rod = function(length,thickness, canvas, origin = [0,0]){
       this.ctx.stroke();
       this.ctx.closePath();
     }
+    this.right=[this.left[0]+ratio*this.length*Math.cos (convertToRadian(angle)),this.left[1]+ratio*this.length*Math.sin (convertToRadian(angle))];
     resetOrigin();
     };
-Rod.prototype.attach = function(point = [0,0]){
-    this.origin = point;
+Rod.prototype.attachLeft = function(point = [0,0]){
+    this.left =point;
     };
 var Slider = function(length,breadth, canvas, origin = [0,0],rot=[0,0]){
     this.ctx = canvas.getContext('2d');

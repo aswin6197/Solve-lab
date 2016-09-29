@@ -86,7 +86,7 @@
     var antiClock=document.getElementById("antiClockId");
 
     slider = new Slider(200*ratio,50*ratio, canvas, origin = [0]);
-    crank = new Rod(200*ratio,10*ratio, canvas, origin = [canvas.width/5,canvas.height/2.75]);
+    crank = new Rod(200*ratio,10*ratio, canvas);
     connectingRod = new Rod(300*ratio,10*ratio, canvas);
 
 
@@ -280,12 +280,16 @@
 
         resize();
 
-      	crank.attach([canvas.width/5,canvas.height/2.75]);
+      	crank.attachLeft([canvas.width/5,canvas.height/2.75]);
       	crank.rotate(angle);
+
       	slider.attach([canvas.width/5 + sliderPositionFromCrank(angle)*ratio- slider.length/2*ratio, canvas.height/2.75 - slider.breadth/2*ratio],[slider.length/2,slider.breadth/2]);
       	slider.rotate(0);
-      	connectingRod.attach([canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))*ratio, canvas.height/2.75 + crank.length*Math.sin(convertToRadian(angle))*ratio]);
-      	connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
+
+        //connectingRod.attachLeft([canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))*ratio, canvas.height/2.75 + crank.length*Math.sin(convertToRadian(angle))*ratio]);
+        connectingRod.attachLeft(crank.right);
+        connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
+
       	drawGraph();
     }
 
