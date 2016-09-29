@@ -28,23 +28,32 @@ var Rod = function(length,thickness, canvas,left=[0,0],right=[0,0]){
 Rod.prototype.attachLeft = function(point = [0,0]){
     this.left =point;
     };
-var Slider = function(length,breadth, canvas, origin = [0,0],rot=[0,0]){
+var Slider = function(length,breadth, canvas, centre = [0,0]){
     this.ctx = canvas.getContext('2d');
     this.length=length;
     this.breadth=breadth;
-    this.origin = origin;
-    this.rot=rot;
+    this.centre = centre;
+    this.left = this.centre-this.length/2;
+    this.right = this.centre+this.length/2
     };
-Slider.prototype.attach = function(point = [0,0],rot){
-    this.origin = point;
-    this.rot=rot;
+Slider.prototype.attachCentre = function(point = [0,0]){
+    this.centre = point;
     };
-Slider.prototype.rotate = function(angle = 0){
-    this.ctx.translate(this.rot[0], this.rot[1]);
+
+Slider.prototype.attachLeft = function(point){
+        this.left=point;
+        this.centre=[this.left[0]+this.length/2*ratio,this.left[1]];
+        //this.right = [this.left[0]+this.length*ratio,this.left[1]];
+    };
+
+Slider.prototype.attachCentre = function(point){
+    this.centre=point;
+};
+
+Slider.prototype.rotateCentre = function(angle = 0){
+    this.ctx.translate(this.centre[0], this.centre[1]);
     this.ctx.rotate(convertToRadian(angle));
-    resetOrigin();
-    this.ctx.translate(this.origin[0],this.origin[1]);
-    this.ctx.strokeRect(0, 0, this.length*ratio, this.breadth*ratio);
+    this.ctx.strokeRect(- this.length/2*ratio, - this.breadth/2*ratio, this.length*ratio, this.breadth*ratio);
     resetOrigin();
     };
 var angle = 0.0;

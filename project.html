@@ -59,7 +59,7 @@
 
 <input type="checkbox" id="dirReverse" class="variableSlider">
 
-<script src="funtions.js"></script>
+<script src="functions.js"></script>
 <script src="object.js"></script>
 
 <script type="text/javascript">
@@ -80,15 +80,15 @@
     var setAngle=document.getElementById("setAngleId");
     var submit=document.getElementById("button");
 
-
+console.log(angle);
     var ratio=canvas.width/1280;
 
     var antiClock=document.getElementById("antiClockId");
 
-    slider = new Slider(200*ratio,50*ratio, canvas, origin = [0]);
+
     crank = new Rod(200*ratio,10*ratio, canvas);
     connectingRod = new Rod(300*ratio,10*ratio, canvas);
-
+    slider = new Slider(200*ratio,50*ratio, canvas, origin = [0,0]);
 
 
     function inputResize(tem,l,h) {
@@ -258,6 +258,8 @@
     }
 
     function drawTarget(){
+        ctx.clearRect(0, 0, canvas.width , canvas.height);
+
         ratio=canvas.width/1280;
 
         crank.length=parseInt(crankSlider.value);
@@ -276,19 +278,16 @@
             incrementAngle();
         }
 
-        ctx.clearRect(0, 0, canvas.width , canvas.height);
-
         resize();
 
       	crank.attachLeft([canvas.width/5,canvas.height/2.75]);
       	crank.rotate(angle);
 
-      	slider.attach([canvas.width/5 + sliderPositionFromCrank(angle)*ratio- slider.length/2*ratio, canvas.height/2.75 - slider.breadth/2*ratio],[slider.length/2,slider.breadth/2]);
-      	slider.rotate(0);
-
-        //connectingRod.attachLeft([canvas.width/5 + crank.length*Math.cos(convertToRadian(angle))*ratio, canvas.height/2.75 + crank.length*Math.sin(convertToRadian(angle))*ratio]);
         connectingRod.attachLeft(crank.right);
         connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
+
+        slider.attachCentre(connectingRod.right);
+        slider.rotateCentre(0);
 
       	drawGraph();
     }
