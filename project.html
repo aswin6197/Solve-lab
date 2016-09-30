@@ -80,7 +80,6 @@
     var setAngle=document.getElementById("setAngleId");
     var submit=document.getElementById("button");
 
-console.log(angle);
     var ratio=canvas.width/1280;
 
     var antiClock=document.getElementById("antiClockId");
@@ -262,8 +261,8 @@ console.log(angle);
 
         ratio=canvas.width/1280;
 
-        crank.length=parseInt(crankSlider.value);
-        connectingRod.length=parseInt(connectingRodSlider.value);
+        crank.length=parseFloat(crankSlider.value);
+        connectingRod.length=parseFloat(connectingRodSlider.value);
 
         if(f==1){
         crankLengthText.value=crankSlider.value;

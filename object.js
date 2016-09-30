@@ -1,4 +1,4 @@
-
+//objects created
 var Rod = function(length,thickness, canvas,left=[0,0],right=[0,0]){
     this.ctx = canvas.getContext('2d');
     this.length=length;
@@ -42,7 +42,7 @@ Slider.prototype.attachCentre = function(point = [0,0]){
 
 Slider.prototype.attachLeft = function(point){
         this.left=point;
-        this.centre=[this.left[0]+this.length/2*ratio,this.left[1]];
+        this.centre=[this.left[0]+this.length/2,this.left[1]];
         //this.right = [this.left[0]+this.length*ratio,this.left[1]];
     };
 
@@ -56,12 +56,13 @@ Slider.prototype.rotateCentre = function(angle = 0){
     this.ctx.strokeRect(- this.length/2*ratio, - this.breadth/2*ratio, this.length*ratio, this.breadth*ratio);
     resetOrigin();
     };
+//common variables and simple functions
 var angle = 0.0;
 var fps=60;
     var aspectRatio=16/9;
     var f=1; //controls how slider and text box gets updated
     var flag=1; //controls whether angle is incremented
-    //var ratio=canvas.width/1280;
+    //unable to create ratio var in js file
 
 
     function convertToRadian(degree){
