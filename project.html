@@ -43,12 +43,12 @@
     <option value="3">Data</option>
   </select>
 
-  <canvas  width = "1280" height="606" id = "myCanvas">
+  <canvas width = "1280" height="606" id = "myCanvas">
  Update browser
 </canvas>
 
 
-<input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
+<input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider"   onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 
@@ -59,7 +59,6 @@
 
 <input type="checkbox" id="dirReverse" class="variableSlider">
 
-<script src="functions.js"></script>
 <script src="object.js"></script>
 
 <script type="text/javascript">
@@ -279,14 +278,14 @@
 
         resize();
 
-      	crank.attachLeft([canvas.width/5,canvas.height/2.75]);
+      	crank.attach([canvas.width/5,canvas.height/2.75],[0,0]);
       	crank.rotate(angle);
 
-        connectingRod.attachLeft(crank.right);
+        connectingRod.attach(crank.right,[0,0]);
         connectingRod.rotate(convertToDegree(calculatePhi(angle)), drawCircumference = false);
 
-        slider.attachCentre(connectingRod.right);
-        slider.rotateCentre(0);
+        slider.attach(connectingRod.right,[0,0]);
+        slider.rotate(0);
 
       	drawGraph();
     }
