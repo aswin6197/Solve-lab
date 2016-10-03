@@ -284,8 +284,8 @@
         connectingRod.attach(crank.right);
         connectingRod.rotate(convertToDegree(calculatePhi(angle)),[0,0],drawCircumference = false);
 
-        slider.attach(connectingRod.right,[slider.length/2,0]);
-        slider.rotate(angle,[slider.length/2,0]);
+        slider.attach(connectingRod.right);
+        slider.rotate(0);
 
       	drawGraph();
     }

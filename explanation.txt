@@ -1,0 +1,59 @@
+CURRENT STATUS OF THE LIBRARY FOR SOLVE LAB
+
+    made class for rod and Slider
+
+    Rod
+        attributes
+            length
+            thickness
+            origin :has the location of left most point of the rod w.r.t to the canvas
+                every other point on rod is w.r.t to  origin
+            right : position of rightmost point of rod w.r.t to canvas
+
+        methods (functions)
+                .attach()
+                    it attaches a point of the rod [imagePoint] to a point in the canvas [canvasPoint] both given by user
+                has two parameters :
+                    canvasPoint:
+                        point on the canvas to which the rod is to be attached
+                    imagePoint:
+                        point on the rod which attaches to the canvasPoint
+
+                rotate()
+                    draws the rod at a point specified in previous function and at the angle given in this function
+                has 2 parameters :
+                    angle:
+                        the angle to which the rod is to rotated
+                    imagePoint:
+                        the point of the rod abt which the rod is to be rotated
+    Slider
+        attributes:
+            length
+            breadth
+            origin : has location of the centre of the slider w.r.t the canvas
+                all the points given below are w.r.t to the canvas
+            left
+            top
+            bottom
+            right
+        methods(functions)
+            .attach()
+                attaches the specified point of the slider to the given point in the canvas
+                parameters
+                    canvasPoint:
+                        the point in the canvas to which the slider is to be attached
+                    imagePoint
+                        the point in the slider which attaches to the above mentioned point
+            .rotate()
+                draws the slider at the point specified above at an angle abt the given point
+                parameters
+                    angle:
+                        the angle at which the slider is inclined
+                    imagePoint:
+                        the point about which the the inclination is drawn
+IMPORTANT POINTS
+    THE ROTATE FUNCTION DOESNT ROTATE THE OBJECT IS JUST DRAWS IT AT ANGLE IN EACH FRAME
+    THE ROTATION IS DUE TO THE DIFFERANT ANGLES IN EACH FRAME
+
+    THE ATTACH ONLY STORES THE VALUE IN THE OBJECT
+    THE OBJECT IS NOT DRAWN TILL THE ROTATE IS CALLED
