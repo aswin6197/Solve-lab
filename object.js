@@ -4,15 +4,16 @@ var Rod = function(length,thickness, canvas,origin=[0,0]){
     this.length=length;
     this.thickness=thickness;
     this.origin=origin;//origin is at left
-    this.right=origin+length;
+    this.right=[origin[0]+length,origin[1]];
     };
-  Rod.prototype.rotate = function(angle = 0, drawCircumference = true){
+  Rod.prototype.rotate = function(angle = 0,imagePoint,drawCircumference = true){
     this.ctx.lineWidth = this.thickness*ratio;
-    this.ctx.translate(this.origin[0], this.origin[1]);
+    this.ctx.translate(this.origin[0]+imagePoint[0], this.origin[1]+imagePoint[1]);
     this.ctx.rotate(convertToRadian(angle));
     this.ctx.beginPath();
-    this.ctx.moveTo(0,0);
-    this.ctx.lineTo(this.length*ratio,0);
+    //this.ctx.moveTo(0,0);
+    this.ctx.moveTo(-imagePoint[0],-imagePoint[1]);
+    this.ctx.lineTo((this.length-imagePoint[0])*ratio,0);
     this.ctx.stroke();
     this.ctx.closePath();
     if(drawCircumference == true){
@@ -22,13 +23,15 @@ var Rod = function(length,thickness, canvas,origin=[0,0]){
       this.ctx.stroke();
       this.ctx.closePath();
     }
-    this.right=[this.origin[0]+ratio*this.length*Math.cos (convertToRadian(angle)),this.origin[1]+ratio*this.length*Math.sin (convertToRadian(angle))];
+
+    this.right=[this.origin[0]+imagePoint[0]+ratio*(this.length-imagePoint[0])*Math.cos (convertToRadian(angle)),this.origin[1]+ratio*(this.length-imagePoint[0])*Math.sin (convertToRadian(angle))];
     resetOrigin();
     };
 Rod.prototype.attach = function(canvasPoint,imagePoint=[0,0]){
         //this.origin=point-imagePoint;
-    this.origin =[canvasPoint[0] - imagePoint[0],canvasPoint[1]-imagePoint[1]];
+        this.origin =[canvasPoint[0] - imagePoint[0],canvasPoint[1]-imagePoint[1]];
     };
+
 var Slider = function(length,breadth, canvas, origin = [0,0]){
     this.ctx = canvas.getContext('2d');
     this.length=length;
@@ -40,14 +43,14 @@ var Slider = function(length,breadth, canvas, origin = [0,0]){
     this.bottom=[this.origin[0],this.origin[1]+this.breadth/2];
     };
 Slider.prototype.attach = function(canvasPoint,imagePoint = [0,0]){
-        //this.origin=canvasPoint-imagePoint;
+        //this.origin=canvasPoint;
         this.origin = [canvasPoint[0]- imagePoint[0],canvasPoint[1]-imagePoint[1]];
     };
 
-Slider.prototype.rotate = function(angle = 0){
-    this.ctx.translate(this.origin[0], this.origin[1]);
+Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the point of rotation
+    this.ctx.translate(this.origin[0]+imagePoint[0],this.origin[1]+imagePoint[1]);
     this.ctx.rotate(convertToRadian(angle));
-    this.ctx.strokeRect(- this.length/2*ratio, - this.breadth/2*ratio, this.length*ratio, this.breadth*ratio);
+    this.ctx.strokeRect(ratio*(-this.length/2-imagePoint[0]),(-imagePoint[1]- this.breadth/2)*ratio, this.length*ratio, this.breadth*ratio);
     this.right=[this.origin[0]+this.length/2*ratio*Math.cos(convertToRadian(angle)),this.origin[1]+this.length/2*ratio*Math.sin(convertToRadian(angle))];
     resetOrigin();
     };
@@ -82,7 +85,7 @@ var fps=60;
       }
     }
     function calculatePhi(angle){
-        return Math.asin((crank.length * Math.sin(convertToRadian(360 - angle)))/ connectingRod.length)
+        return Math.asin((crank.length * Math.sin(convertToRadian(360 - angle)))/ (connectingRod.length))
     }
     function sliderPositionFromCrank(angle){
         return Math.sqrt(Math.pow(connectingRod.length,2) - Math.pow(crank.length*Math.sin(convertToRadian(360 - angle)),2)) + crank.length*Math.cos(convertToRadian(360 - angle))
