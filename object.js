@@ -41,6 +41,7 @@ var Slider = function(length,breadth, canvas, origin = [0,0]){
     this.right = [this.origin[0]+this.length/2,this.origin[1]];
     this.top=[this.origin[0],this.origin[1]-this.breadth/2];
     this.bottom=[this.origin[0],this.origin[1]+this.breadth/2];
+    this.imagePoint=[];
     };
 Slider.prototype.attach = function(canvasPoint,imagePoint = [0,0]){
         //this.origin=canvasPoint;
@@ -54,6 +55,10 @@ Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the p
     this.right=[this.origin[0]+this.length/2*ratio*Math.cos(convertToRadian(angle)),this.origin[1]+this.length/2*ratio*Math.sin(convertToRadian(angle))];
     resetOrigin();
     };
+
+Slider.prototype.addi = function(point=[0,0]){
+    this.imagePoint.push(point);
+};
 //common variables and simple functions
 var angle = 0.0;
 var fps=60;
