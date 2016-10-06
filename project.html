@@ -263,16 +263,16 @@
         crank.length=parseFloat(crankSlider.value);
         connectingRod.length=parseFloat(connectingRodSlider.value);
 
-        if(f==1){
+        if(updateTextfromSlider==1){
         crankLengthText.value=crankSlider.value;
         connectingRodText.value=connectingRodSlider.value;
         omega2Text.value=omega2Slider.value;
         }
-        if((parseFloat(omega2Slider.value)!=0)&&(flag==0)){
-          flag=1;
+        if((parseFloat(omega2Slider.value)!=0)&&(updateAngle==0)){
+          updateAngle=1;
          setAngle.value="";
         }
-        if(flag==1){
+        if(updateAngle==1){
             incrementAngle();
         }
 
@@ -284,11 +284,10 @@
         connectingRod.attach(crank.right);
         connectingRod.rotate(convertToDegree(calculatePhi(angle)),[0,0],drawCircumference = false);
 
-        slider.addi([slider.length/2,0]);
+        slider.addi([0,0]);
         slider.attach(connectingRod.right,slider.imagePoint[0]);
         slider.rotate(0);
 
-        slider.imagePoint=[];//empties the arrray
       	drawGraph();
     }
 

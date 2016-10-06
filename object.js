@@ -57,14 +57,18 @@ Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the p
     };
 
 Slider.prototype.addi = function(point=[0,0]){
-    this.imagePoint.push(point);
+    if(firstLoop==1){//inserts the element to array only in the first iteration
+        this.imagePoint.push(point);
+        firstLoop=0;
+    }
 };
 //common variables and simple functions
 var angle = 0.0;
 var fps=60;
     var aspectRatio=16/9;
-    var f=1; //controls how slider and text box gets updated
-    var flag=1; //controls whether angle is incremented
+    var updateTextfromSlider=1; //controls how slider and text box gets updated
+    var updateAngle=1; //controls whether angle is incremented
+    var firstLoop=1;//stores whether current loop is the very first loop
     //unable to create ratio var in js file
 
 
@@ -100,15 +104,15 @@ var fps=60;
     }
     //starts updating text box values from slider
         function f1(){
-        	f=1;
+        	updateTextfromSlider=1;//f==update
         }
     //stops updating text box from slider
         function f2(){
-        	f=0;
+        	updateTextfromSlider=0;
         }
     //stops incrementing the value of angle
         function stop(){
-          flag=0;
+          updateAngle=0;//flag updateAngle
           angle=360-parseFloat(setAngle.value)%360;
           omega2Slider.value=0;
         }
@@ -117,5 +121,5 @@ var fps=60;
           crankSlider.value=crankLengthText.value;
           connectingRodSlider.value=connectingRodText.value;
           omega2Slider.value=omega2Text.value;
-          f=1;
+          updateTextfromSlider=1;
         }
