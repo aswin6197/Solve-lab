@@ -32,8 +32,9 @@ Rod.prototype.attach = function(canvasPoint,imagePoint=[0,0]){
         this.origin =[canvasPoint[0] - imagePoint[0],canvasPoint[1]-imagePoint[1]];
     };
 
-var Slider = function(length,breadth, canvas, origin = [0,0]){
+var Slider = function(length,breadth,image,canvas, origin = [0,0]){
     this.ctx = canvas.getContext('2d');
+    this.image=image;
     this.length=length;
     this.breadth=breadth;
     this.origin  = origin;
@@ -42,6 +43,7 @@ var Slider = function(length,breadth, canvas, origin = [0,0]){
     this.top=[this.origin[0],this.origin[1]-this.breadth/2];
     this.bottom=[this.origin[0],this.origin[1]+this.breadth/2];
     this.imagePoint=[];
+    this.firstLoop=1;
     };
 Slider.prototype.attach = function(canvasPoint,imagePoint = [0,0]){
         //this.origin=canvasPoint;
@@ -49,17 +51,21 @@ Slider.prototype.attach = function(canvasPoint,imagePoint = [0,0]){
     };
 
 Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the point of rotation
-    this.ctx.translate(this.origin[0]+imagePoint[0],this.origin[1]+imagePoint[1]);
+    //fins the value of origin after considering the angle
+    this.origin = [this.origin[0] + imagePoint[0]-imagePoint[0]*Math.cos(convertToRadian(angle)),this.origin[1]+imagePoint[1]-imagePoint[0]*Math.sin(convertToRadian(angle))];
+    this.ctx.translate(this.origin[0],this.origin[1]);
     this.ctx.rotate(convertToRadian(angle));
-    this.ctx.strokeRect(ratio*(-this.length/2-imagePoint[0]),(-imagePoint[1]- this.breadth/2)*ratio, this.length*ratio, this.breadth*ratio);
-    this.right=[this.origin[0]+this.length/2*ratio*Math.cos(convertToRadian(angle)),this.origin[1]+this.length/2*ratio*Math.sin(convertToRadian(angle))];
+    this.ctx.drawImage(this.image,-this.length/2,-this.breadth/2,this.length,this.breadth);
+
+    this.right=[this.origin[0]+ratio*(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]+ratio*(this.length/2)*Math.sin (convertToRadian(angle))];
+    this.left=[this.origin[0]-ratio*(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]-ratio*(this.length/2)*Math.sin (convertToRadian(angle))];
     resetOrigin();
     };
 
 Slider.prototype.addi = function(point=[0,0]){
-    if(firstLoop==1){//inserts the element to array only in the first iteration
+    if(this.firstLoop==1){//inserts the element to array only in the first iteration
         this.imagePoint.push(point);
-        firstLoop=0;
+        this.firstLoop=0;
     }
 };
 //common variables and simple functions
@@ -68,7 +74,7 @@ var fps=60;
     var aspectRatio=16/9;
     var updateTextfromSlider=1; //controls how slider and text box gets updated
     var updateAngle=1; //controls whether angle is incremented
-    var firstLoop=1;//stores whether current loop is the very first loop
+    //var firstLoop=1;//stores whether current loop is the very first loop
     //unable to create ratio var in js file
 
 

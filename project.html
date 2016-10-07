@@ -48,8 +48,8 @@
 </canvas>
 
 
-<input type="range" min="50" max="100" step="1" id="crankSliderId" class="variableSlider"   onmousedown="f1()" onmouseleave="f2()">
-<input type="range" min="201" max="700" step="1" id="connectingRodSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
+<input type="range" min="50" max="100" step="1" value="50"  id="crankSliderId" class="variableSlider"   onmousedown="f1()" onmouseleave="f2()">
+<input type="range" min="201" max="700" step="1"  id="connectingRodSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 
 <input type="text" id="crankLengthTextId" placeholder="100" class="variableSlider" onfocus="f2()" onchange="set1()">
@@ -59,9 +59,17 @@
 
 <input type="checkbox" id="dirReverse" class="variableSlider">
 
+<img src="slider.png" id="sliderImage">
+<img src="Connecting_Rod.png" id="connectingRodImage">
+<img src="Crank.png" id="crankImage">
+
 <script src="object.js"></script>
 
 <script type="text/javascript">
+
+    var sliderImage = document.getElementById("sliderImage");
+    var connectingRodImage = document.getElementById("connectingRodImage");
+    var crankImage = document.getElementById("crankImage");
 
     var canvas = document.getElementById('myCanvas');
     var ctx = canvas.getContext('2d');
@@ -84,9 +92,11 @@
     var antiClock=document.getElementById("antiClockId");
 
 
-    crank = new Rod(200*ratio,10*ratio, canvas);
-    connectingRod = new Rod(300*ratio,10*ratio, canvas);
-    slider = new Slider(200*ratio,50*ratio, canvas, origin = [0,0]);
+    //crank = new Rod(200*ratio,10*ratio, canvas);
+    //connectingRod = new Rod(300*ratio,10*ratio, canvas);
+    connectingRod = new Slider(300*ratio,10*ratio,connectingRodImage,canvas);
+    crank = new Slider(200*ratio,10*ratio,crankImage,canvas);
+    slider = new Slider(200*ratio,50*ratio,sliderImage, canvas, origin = [0,0]);
 
 
     function inputResize(tem,l,h) {
@@ -278,15 +288,16 @@
 
         resize();
 
-      	crank.attach([canvas.width/5,canvas.height/2.75]);
-      	crank.rotate(angle,[0,0]);
+        crank.addi([-crank.length/2,-crank.breadth/2]);
+      	crank.attach([canvas.width/5,canvas.height/2.75],crank.imagePoint[0]);
+      	crank.rotate(angle,crank.imagePoint[0]);
 
-        connectingRod.attach(crank.right);
-        connectingRod.rotate(convertToDegree(calculatePhi(angle)),[0,0],drawCircumference = false);
+        connectingRod.addi([-connectingRod.length/2,-connectingRod.breadth/2]);
+        connectingRod.attach(crank.right,connectingRod.imagePoint[0]);
+        connectingRod.rotate(convertToDegree(calculatePhi(angle)),connectingRod.imagePoint[0]);
 
-        slider.addi([0,0]);
-        slider.attach(connectingRod.right,slider.imagePoint[0]);
-        slider.rotate(0);
+    //    slider.attach(connectingRod.right);
+    //    slider.rotate(0);
 
       	drawGraph();
     }
