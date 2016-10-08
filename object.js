@@ -56,10 +56,10 @@ Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the p
     this.origin = [this.origin[0] + imagePoint[0]-imagePoint[0]*Math.cos(convertToRadian(angle)),this.origin[1]+imagePoint[1]-imagePoint[0]*Math.sin(convertToRadian(angle))];
     this.ctx.translate(this.origin[0],this.origin[1]);
     this.ctx.rotate(convertToRadian(angle));
-    this.ctx.drawImage(this.image,-this.length/2,-this.breadth/2,this.length,this.breadth);
+    this.ctx.drawImage(this.image,-this.length/2*ratio,-this.breadth/2*ratio,this.length*ratio,this.breadth*ratio);
 
-    this.right=[this.origin[0]+(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]+(this.length/2)*Math.sin (convertToRadian(angle))];
-    this.left=[this.origin[0]-(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]-(this.length/2)*Math.sin (convertToRadian(angle))];
+    this.right=[this.origin[0]+ratio*(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]+ratio*(this.length/2)*Math.sin (convertToRadian(angle))];
+    this.left=[this.origin[0]-ratio*(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]-ratio*(this.length/2)*Math.sin (convertToRadian(angle))];
     resetOrigin();
     };
 
