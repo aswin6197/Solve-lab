@@ -1,4 +1,5 @@
 //objects created
+/*
 var Rod = function(length,thickness, canvas,origin=[0,0]){
     this.ctx = canvas.getContext('2d');
     this.length=length;
@@ -31,7 +32,7 @@ Rod.prototype.attach = function(canvasPoint,imagePoint=[0,0]){
         //this.origin=point-imagePoint;
         this.origin =[canvasPoint[0] - imagePoint[0],canvasPoint[1]-imagePoint[1]];
     };
-
+*/
 var Slider = function(length,breadth,image,canvas, origin = [0,0]){
     this.ctx = canvas.getContext('2d');
     this.image=image;
@@ -51,7 +52,7 @@ Slider.prototype.attach = function(canvasPoint,imagePoint = [0,0]){
     };
 
 Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the point of rotation
-    //fins the value of origin after considering the angle
+    //finds the value of origin after considering the angle
     this.origin = [this.origin[0] + imagePoint[0]-imagePoint[0]*Math.cos(convertToRadian(angle)),this.origin[1]+imagePoint[1]-imagePoint[0]*Math.sin(convertToRadian(angle))];
     this.ctx.translate(this.origin[0],this.origin[1]);
     this.ctx.rotate(convertToRadian(angle));
@@ -63,10 +64,11 @@ Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the p
     };
 
 Slider.prototype.addi = function(point=[0,0]){
-    if(this.firstLoop==1){//inserts the element to array only in the first iteration
-        this.imagePoint.push(point);
-        this.firstLoop=0;
-    }
+        if(this.firstLoop==1){
+            this.imagePoint.pop();
+            this.imagePoint.push(point);
+            this.firstLoop=0;
+        }
 };
 //common variables and simple functions
 var angle = 0.0;

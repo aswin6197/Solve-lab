@@ -48,7 +48,7 @@
 </canvas>
 
 
-<input type="range" min="50" max="100" step="1" value="50"  id="crankSliderId" class="variableSlider"   onmousedown="f1()" onmouseleave="f2()">
+<input type="range" min="50" max="100" step="1"   id="crankSliderId" class="variableSlider"   onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="201" max="700" step="1"  id="connectingRodSliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 <input type="range" min="0" max="5" value="2" step="0.01" id="omega2SliderId" class="variableSlider" onmousedown="f1()" onmouseleave="f2()">
 
@@ -270,13 +270,15 @@
 
         ratio=canvas.width/1280;
 
-        crank.length=parseFloat(crankSlider.value);
-        connectingRod.length=parseFloat(connectingRodSlider.value);
 
         if(updateTextfromSlider==1){
-        crankLengthText.value=crankSlider.value;
-        connectingRodText.value=connectingRodSlider.value;
-        omega2Text.value=omega2Slider.value;
+            crank.firstLoop=1;
+            connectingRod.firstLoop=1;
+            crank.length=parseFloat(crankSlider.value);
+            connectingRod.length=parseFloat(connectingRodSlider.value);
+            crankLengthText.value=crankSlider.value;
+            connectingRodText.value=connectingRodSlider.value;
+            omega2Text.value=omega2Slider.value;
         }
         if((parseFloat(omega2Slider.value)!=0)&&(updateAngle==0)){
           updateAngle=1;
@@ -288,16 +290,16 @@
 
         resize();
 
-        crank.addi([-crank.length/2,-crank.breadth/2]);
-      	crank.attach([canvas.width/5,canvas.height/2.75],crank.imagePoint[0]);
+        crank.addi([-crank.length/2,0]);
+        crank.attach([canvas.width/5,canvas.height/2.75],crank.imagePoint[0]);
       	crank.rotate(angle,crank.imagePoint[0]);
 
-        connectingRod.addi([-connectingRod.length/2,-connectingRod.breadth/2]);
-        connectingRod.attach(crank.right,connectingRod.imagePoint[0]);
+       connectingRod.addi([-connectingRod.length/2,-connectingRod.breadth/2]);
+    connectingRod.attach(crank.right,connectingRod.imagePoint[0]);
         connectingRod.rotate(convertToDegree(calculatePhi(angle)),connectingRod.imagePoint[0]);
 
-    //    slider.attach(connectingRod.right);
-    //    slider.rotate(0);
+     slider.attach(connectingRod.right);
+        slider.rotate(0);
 
       	drawGraph();
     }
