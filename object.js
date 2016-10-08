@@ -58,8 +58,8 @@ Slider.prototype.rotate = function(angle,imagePoint=[0,0]){//imagePoint is the p
     this.ctx.rotate(convertToRadian(angle));
     this.ctx.drawImage(this.image,-this.length/2,-this.breadth/2,this.length,this.breadth);
 
-    this.right=[this.origin[0]+ratio*(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]+ratio*(this.length/2)*Math.sin (convertToRadian(angle))];
-    this.left=[this.origin[0]-ratio*(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]-ratio*(this.length/2)*Math.sin (convertToRadian(angle))];
+    this.right=[this.origin[0]+(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]+(this.length/2)*Math.sin (convertToRadian(angle))];
+    this.left=[this.origin[0]-(this.length/2)*Math.cos (convertToRadian(angle)),this.origin[1]-(this.length/2)*Math.sin (convertToRadian(angle))];
     resetOrigin();
     };
 

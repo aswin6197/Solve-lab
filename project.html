@@ -292,16 +292,18 @@
 
         crank.addi([-crank.length/2,0]);
         crank.attach([canvas.width/5,canvas.height/2.75],crank.imagePoint[0]);
-      	crank.rotate(angle,crank.imagePoint[0]);
+        crank.rotate(angle,crank.imagePoint[0]);
+        slider.attach([crank.left[0]+sliderPositionFromCrank(angle),crank.left[1]]);
+
+         slider.rotate(0);
 
        connectingRod.addi([-connectingRod.length/2,-connectingRod.breadth/2]);
     connectingRod.attach(crank.right,connectingRod.imagePoint[0]);
         connectingRod.rotate(convertToDegree(calculatePhi(angle)),connectingRod.imagePoint[0]);
-
-     slider.attach(connectingRod.right);
+/*
+        slider.attach(connectingRod.right);
         slider.rotate(0);
-
-      	drawGraph();
+      */	drawGraph();
     }
 
     setInterval(drawTarget, 1000/fps);
