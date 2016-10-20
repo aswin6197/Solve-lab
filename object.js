@@ -1,38 +1,5 @@
 //objects created
-/*
-var Rod = function(length,thickness, canvas,origin=[0,0]){
-    this.ctx = canvas.getContext('2d');
-    this.length=length;
-    this.thickness=thickness;
-    this.origin=origin;//origin is at left
-    this.right=[origin[0]+length,origin[1]];
-    };
-  Rod.prototype.rotate = function(angle = 0,imagePoint,drawCircumference = true){
-    this.ctx.lineWidth = this.thickness*ratio;
-    this.ctx.translate(this.origin[0]+imagePoint[0], this.origin[1]+imagePoint[1]);
-    this.ctx.rotate(convertToRadian(angle));
-    this.ctx.beginPath();
-    //this.ctx.moveTo(0,0);
-    this.ctx.moveTo(-imagePoint[0],-imagePoint[1]);
-    this.ctx.lineTo((this.length-imagePoint[0])*ratio,0);
-    this.ctx.stroke();
-    this.ctx.closePath();
-    if(drawCircumference == true){
-      this.ctx.beginPath();
-      this.ctx.arc(0,0,this.length*ratio, 0, 2*Math.PI, false);
-      this.ctx.lineWidth = this.thickness/2;
-      this.ctx.stroke();
-      this.ctx.closePath();
-    }
 
-    this.right=[this.origin[0]+imagePoint[0]+ratio*(this.length-imagePoint[0])*Math.cos (convertToRadian(angle)),this.origin[1]+ratio*(this.length-imagePoint[0])*Math.sin (convertToRadian(angle))];
-    resetOrigin();
-    };
-Rod.prototype.attach = function(canvasPoint,imagePoint=[0,0]){
-        //this.origin=point-imagePoint;
-        this.origin =[canvasPoint[0] - imagePoint[0],canvasPoint[1]-imagePoint[1]];
-    };
-*/
 var Slider = function(length,breadth,image,canvas, origin = [0,0]){
     this.ctx = canvas.getContext('2d');
     this.image=image;
